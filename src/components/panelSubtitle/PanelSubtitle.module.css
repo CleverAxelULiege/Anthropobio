@@ -1,0 +1,16 @@
+.panelSubtitle {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight: 900;
+  font-size: 24px;
+  color: #db8f02;
+  margin-bottom: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  clip-path: polygon(5% 0, 100% 0, 95% 100%, 0% 100%);
+  background-color: white;
+  padding: 5px 20px;
+}
+
+.container {
+  display: flex;
+}

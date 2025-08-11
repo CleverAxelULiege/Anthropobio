@@ -1,0 +1,41 @@
+.nav {
+    display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  gap: 10px;
+  width: 100%;
+  padding: 5px;
+}
+
+.button {
+    text-decoration: none;
+  background-color: #DB8F02;
+  color: white;
+  border: none;
+  font-size: 24px;
+  padding: 8px 16px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  fill: white;
+  display: flex;
+  align-items: center;
+  flex-direction: row-reverse;
+  gap: 5px;
+}
+
+.button svg {
+    width: 30px;
+}
+
+.button:hover {
+  background-color: #c47b00;
+}
+
+.active {
+  box-shadow: 0 0 8px 2px #FFD700;
+}

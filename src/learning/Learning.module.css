@@ -1,0 +1,222 @@
+.primateNamesContainer {
+    display: grid;
+}
+
+.primateNamesContainer button {
+    padding: 10px 5px;
+    min-height: 60px;
+    border-style: none;
+    outline: none;
+    font-size: 16px;
+    border: 1px solid #dcdcdc;
+    cursor: pointer;
+    background-color: #ffffff;
+}
+
+.primateNamesContainer button:hover,
+.primateNamesContainer button.active {
+    color: white;
+    background-color: #24425e;
+    border: 3px solid;
+    border-image-slice: 1;
+    border-width: 2px;
+    border-image-source: linear-gradient(90deg, #db8f02, #f7c94a, #db8f02);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #001F54;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.rowDark {
+    background-color: #eeeded;
+    color: black;
+}
+
+.rowLight {
+    background-color: #ffffff;
+    color: black;
+}
+
+.cell {
+    padding: 10px 5px;
+    width: 50%;
+    vertical-align: top;
+}
+
+.cell:first-child {
+    text-align: right;
+    font-weight: bold;
+}
+
+.cell:last-child {
+    text-align: left;
+    color: #001F54;
+}
+
+.criteriaTableContainer {
+    width: 650px;
+    position: relative;
+    z-index: -1;
+    animation: fadeInUp 500ms ease-in-out;
+    flex-shrink: 0;
+}
+
+.criteriaWithDescription {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    align-items: start;
+    margin-top: 20px;
+}
+
+
+.criteriaWithDescription p {
+    width: 650px;
+    flex-shrink: 0;
+    padding: 10px;
+    font-size: 20px;
+    max-width: 500px;
+    color: white;
+}
+
+
+
+
+
+.videosContainer {
+    display: flex;
+    gap: 5px;
+
+}
+
+.videosList {
+    display: flex;
+    flex: 1;
+    gap: 5px;
+    min-width: 300px;
+}
+
+.videosList>div {
+    flex: 1;
+}
+
+.videosTitle {
+    margin-bottom: 15px;
+    color: #333;
+    font-size: 18px;
+}
+
+.videoButton {
+    margin-bottom: 3px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    text-align: center;
+    background-size: 220%;
+    color: white;
+    background-color: transparent;
+    background-position: 100%;
+    border: 3px solid #db8f02;
+    text-transform: uppercase;
+    padding: 12px 8px;
+    border-radius: 3px;
+    transition: all .2s ease-out;
+    font-weight: 600;
+    cursor: pointer;
+    letter-spacing: 2px;
+    background-image: linear-gradient(110deg, #db8f02 0%, #db8f02 50%, transparent 50%, transparent 100%);
+    font-size: 18px;
+    text-decoration: none;
+}
+
+.videoButton:hover {
+    box-shadow: 0 0 .3em rgba(0, 0, 0, 0.25);
+    background-position: 0;
+    color: #fff;
+}
+
+.videoButton.active {
+    box-shadow: 0 0 .3em rgba(0, 0, 0, 0.25);
+    background-position: 0;
+    color: #fff;
+}
+
+.videoPlayer {
+    min-width: 750px;
+}
+
+.iframe {
+    width: 100%;
+    height: 400px;
+    border-radius: 8px;
+}
+
+.noVideo {
+    height: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8f9fa;
+    border-radius: 8px;
+    border: 2px dashed #dee2e6;
+}
+
+.noVideoText {
+    color: #6c757d;
+    font-size: 16px;
+    margin: 0;
+}
+
+.goToCriteriaTableButton {
+    position: absolute;
+    top: 0;
+    right: 5px;
+    height: calc(100% - 20px);
+    text-decoration: none;
+    background-color: #DB8F02;
+    color: white;
+    border: none;
+    font-size: 20px;
+    padding: 4px 8px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    fill: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.goToCriteriaTableButton:hover {
+    background-color: #c47b00;
+}
+
+.goToCriteriaTableButton svg {
+    width: 30px;
+    transition: transform 0.3s ease;
+}
+
+.goToCriteriaTableButton:hover svg {
+    animation: bounce 0.6s ease-in-out;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-8px);
+    }
+    60% {
+        transform: translateY(-4px);
+    }
+}

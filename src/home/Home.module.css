@@ -1,0 +1,141 @@
+.title {
+  margin-top: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: white;
+  font-weight: 900;
+  font-size: 38px;
+  line-height: 42px;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+.borderBox {
+  margin: 5px;
+  height: 5px;
+  background-color: white;
+}
+
+.sectionContainer {
+  max-width: 1200px;
+  padding: 30px 5px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.sectionTitle {
+  color: white;
+  font-size: 32px;
+  font-weight: 900;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.imgContainer {
+  position: relative;
+  width: 50%;
+  flex-shrink: 0;
+}
+
+.imgContainer::before {
+  content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 100%;
+  height: 100%;
+  background-color: #db8f02;
+  border-radius: 10px;
+  z-index: -1;
+}
+
+.imgContainer img {
+  border-radius: 10px;
+}
+
+.filmIcon {
+  max-width: 100px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotate(-11deg);
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.separatorSection {
+  margin: 50px auto 30px auto;
+  max-width: 1200px;
+  border: none;
+  border-bottom: 1px dashed white;
+}
+
+.skullHandling > div {
+  gap: 30px;
+  flex-direction: row-reverse;
+}
+
+.skullHandlingImg {
+  width: 40%;
+}
+
+.iconGrabCursor {
+  position: absolute;
+  bottom: -25px;
+  right: -25px;
+  max-width: 100px;
+  transform: rotate(-25deg);
+}
+
+.buttonsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.buttonLink {
+  margin: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  text-align: center;
+  background-size: 220%;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+  color: white;
+  background-color: transparent;
+  background-position: 100%;
+  border: 3px solid #db8f02;
+  text-transform: uppercase;
+  padding: 24px 16px;
+  border-radius: 3px;
+  transition: all .2s ease-out;
+  font-weight: 900;
+  cursor: pointer;
+  letter-spacing: 2px;
+  background-image: linear-gradient(110deg, #db8f02 0%, #db8f02 50%, transparent 50%, transparent 100%);
+  font-size: 24px;
+  text-decoration: none;
+}
+
+.buttonLink svg {
+  fill: white;
+  width: 30px;
+}
+
+.buttonLink:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 .3em rgba(0, 0, 0, 0.25);
+  background-position: 0;
+  color: #fff;
+}
+
+.buttonLink:active {
+  transform: translateY(-1px);
+}

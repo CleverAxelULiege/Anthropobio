@@ -1,0 +1,64 @@
+import { useState, useEffect } from "react";
+import Home from "./home/Home";
+import Learning from "./learning/Learning";
+import './types.js'
+
+/** @type {Primate[]} */
+export const PRIMATES = data.primates;
+
+/** @type {Primate[]} */
+export const PRIMATES_LIGHT = PRIMATES.filter((primate) => primate.isExpert === false);
+
+/**@type {Video[]} */
+export const BASE_VIDEOS = data.base_videos;
+
+/**@type {Video[]} */
+export const CRITERION_VIDEOS = data.criterion_videos;
+
+export const VIDEOS = [...BASE_VIDEOS, ...CRITERION_VIDEOS];
+
+/** @type {CriterionWithAnswers[]} */
+export const CRITERIA_WITH_ANSWERS = data.criteria_with_answers;
+
+export const TABS = {
+  home: "home",
+  learning: "learning",
+  observation: "observation"
+};
+
+function App() {
+  function getTabFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get("tab");
+    return Object.values(TABS).includes(tabParam) ? tabParam : TABS.home;
+  }
+
+  const [tab, setTab] = useState(getTabFromUrl);
+
+  useEffect(() => {
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", tab);
+    window.history.pushState({}, "", url);
+  }, [tab]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setTab(getTabFromUrl());
+    };
+
+    window.addEventListener("popstate", handlePopState);
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  return (
+    <main>
+      {tab === TABS.home && <Home setTabs={setTab} />}
+      {tab === TABS.learning && <Learning setTabs={setTab}></Learning>}
+      {tab === TABS.observation && <div>Observation page</div>}
+    </main>
+  );
+}
+
+export default App;
