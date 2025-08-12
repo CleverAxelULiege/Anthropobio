@@ -29,7 +29,13 @@
 }
 
 .button svg {
-    width: 30px;
+  width: 30px;
+  transition: transform 1s ease;
+  transform-style: preserve-3d;
+}
+
+.button:hover svg {
+  transform: rotateY(360deg);
 }
 
 .button:hover {

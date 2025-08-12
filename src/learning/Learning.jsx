@@ -4,7 +4,7 @@ import Title from "../components/title/Title";
 import styles from "./Learning.module.css";
 import { BASE_VIDEOS, CRITERION_VIDEOS, PRIMATES, VIDEOS } from "../App";
 import { useAppSettings } from "../AppSettingsContext";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import PanelSubtitle from "../components/panelSubtitle/PanelSubtitle";
 
 /**
@@ -13,7 +13,24 @@ import PanelSubtitle from "../components/panelSubtitle/PanelSubtitle";
  * @returns 
  */
 export default function Learning(props) {
+    /**
+     * @type {React.RefObject<HTMLDivElement>}
+     */
+    const carouselTrackRef = useRef(null);
 
+    useEffect(() => {
+        document.getElementById("expert_mode_button").classList.add("hidden");
+    }, []);
+
+    const onClickGoToCriteriaTable = () => {
+        carouselTrackRef.current.style.transform = "translateX(-100%)";
+        document.getElementById("expert_mode_button").classList.remove("hidden");
+
+    }
+    const onClickGoToVideos = () => {
+        document.getElementById("expert_mode_button").classList.add("hidden");
+        carouselTrackRef.current.style.transform = "";
+    }
 
     return (
         <>
@@ -26,9 +43,23 @@ export default function Learning(props) {
                 </Subtitle>
             </div>
 
-            <VideosSection onClickGotoCriteriaTable={() => { }}></VideosSection>
+            <div className={styles.carouselContainer}>
+                <div className={styles.carouselWrapper}>
+                    <div ref={carouselTrackRef} className={styles.carouselTrack}>
 
-            {/* <CriteriaTableSection onClickGotoVideos={() => {}}></CriteriaTableSection> */}
+                        <div className={styles.carouselSlide}>
+                            <VideosSection onClickGotoCriteriaTable={onClickGoToCriteriaTable}></VideosSection>
+                        </div>
+
+                        <div className={styles.carouselSlide}>
+                            <CriteriaTableSection onClickGoToVideoTutorials={onClickGoToVideos}></CriteriaTableSection>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+
 
 
         </>
@@ -102,7 +133,7 @@ function VideosSection({ onClickGotoCriteriaTable }) {
     );
 }
 
-function CriteriaTableSection() {
+function CriteriaTableSection({ onClickGoToVideoTutorials }) {
     const { expertMode, setExpertMode, primateId, setPrimateId } = useAppSettings();
     const [primate, setPrimate] = useState(null);
 
@@ -117,10 +148,16 @@ function CriteriaTableSection() {
     }
     return (
         <section>
-            <div>
-                <div className="center">
-                    <PanelSubtitle>Critères morphologiques</PanelSubtitle>
+            <div className="relative">
+                <div className="center" style={{ maxWidth: "1920px", display: "flex", justifyContent: "end" }}>
+                    <PanelSubtitle reverse>Critères morphologiques</PanelSubtitle>
                 </div>
+
+                <button onClick={() => onClickGoToVideoTutorials()} className={styles.goToVideosButton}>
+                    &#8592;
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M128 128C92.7 128 64 156.7 64 192L64 448C64 483.3 92.7 512 128 512L384 512C419.3 512 448 483.3 448 448L448 192C448 156.7 419.3 128 384 128L128 128zM496 400L569.5 458.8C573.7 462.2 578.9 464 584.3 464C597.4 464 608 453.4 608 440.3L608 199.7C608 186.6 597.4 176 584.3 176C578.9 176 573.7 177.8 569.5 181.2L496 240L496 400z" /></svg>
+                    Retour aux vidéos
+                </button>
             </div>
             <div>
                 <SelectableGrid onClick={onClickCriteriaTable}></SelectableGrid>

@@ -68,3 +68,14 @@ main .center.padding_none {
 .relative {
     position: relative;
 }
+
+
+#expert_mode_button {
+    transition: all 75ms ease-in-out;
+}
+
+#expert_mode_button.hidden {
+    pointer-events: none;
+    opacity: 0;
+    visibility: hidden;
+}

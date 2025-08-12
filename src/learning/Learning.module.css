@@ -1,5 +1,6 @@
 .primateNamesContainer {
     display: grid;
+    gap: 2px;
 }
 
 .primateNamesContainer button {
@@ -11,6 +12,8 @@
     border: 1px solid #dcdcdc;
     cursor: pointer;
     background-color: #ffffff;
+    border-radius: 5px;
+    overflow: hidden;
 }
 
 .primateNamesContainer button:hover,
@@ -195,28 +198,84 @@
     align-items: center;
     gap: 5px;
 }
+.goToVideosButton {
+    position: absolute;
+    top: 0;
+    left: 5px;
+    height: calc(100% - 20px);
+    text-decoration: none;
+    background-color: #DB8F02;
+    color: white;
+    border: none;
+    font-size: 20px;
+    padding: 4px 8px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    fill: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
 
-.goToCriteriaTableButton:hover {
+.goToCriteriaTableButton:hover, .goToVideosButton {
     background-color: #c47b00;
 }
 
-.goToCriteriaTableButton svg {
+.goToCriteriaTableButton svg, .goToVideosButton svg {
     width: 30px;
     transition: transform 0.3s ease;
 }
 
-.goToCriteriaTableButton:hover svg {
+.goToCriteriaTableButton:hover svg, .goToVideosButton:hover svg {
     animation: bounce 0.6s ease-in-out;
 }
 
 @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
         transform: translateY(0);
     }
+
     40% {
         transform: translateY(-8px);
     }
+
     60% {
         transform: translateY(-4px);
     }
+}
+
+
+
+
+.carouselContainer {
+    max-width: 2000px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.carouselWrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+.carouselTrack {
+    display: flex;
+    transition: transform 500ms ease-in-out;
+    height: 100%;
+}
+
+.carouselSlide {
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
 }
