@@ -1,0 +1,246 @@
+.skullImagesContainer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 7px;
+}
+
+.skullImagesContainer button {
+    opacity: 0.65;
+    width: 230px;
+    flex-shrink: 0;
+    height: 100px;
+    cursor: pointer;
+    transition: all 150ms ease-in-out;
+    border-style: none;
+    outline: none;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+.skullImagesContainer button:hover,
+.skullImagesContainer button.active {
+    opacity: 1;
+    border: 3px solid;
+    border-image-slice: 1;
+    border-width: 3px;
+    border-image-source: linear-gradient(90deg, #db8f02, #f7c94a, #db8f02);
+}
+
+.skullImagesContainer button:hover img,
+.skullImagesContainer button.active img {
+    transform: scale(1.1);
+}
+
+.skullImagesContainer button img {
+    max-width: 100%;
+    object-fit: cover;
+    object-position: center;
+    width: 100%;
+    height: 100%;
+    transition: all 150ms ease-in-out;
+}
+
+
+
+
+
+
+
+
+
+
+.carouselContainer {
+    max-width: 2000px;
+    margin: 0 auto;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.carouselWrapper {
+    overflow: hidden;
+    position: relative;
+}
+
+.carouselTrack {
+    display: flex;
+    transition: transform 500ms ease-in-out;
+    height: 100%;
+}
+
+.carouselSlide {
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+}
+
+
+
+
+.sketchfabContainer {
+    width: 50%;
+}
+
+.sketchfabContainer iframe {
+    width: 100%;
+    aspect-ratio: 16/9;
+    pointer-events: all;
+}
+
+.goToSkullDisplayButton {
+    position: absolute;
+    top: 0;
+    left: 5px;
+    height: calc(100% - 20px);
+    text-decoration: none;
+    background-color: #DB8F02;
+    color: white;
+    border: none;
+    font-size: 20px;
+    padding: 4px 8px;
+    font-weight: 700;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    fill: white;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+.goToSkullDisplayButton:hover {
+    background-color: #c47b00;
+}
+
+.goToSkullDisplayButton svg {
+    width: 30px;
+    transition: transform 0.3s ease;
+}
+
+.goToSkullDisplayButton:hover svg {
+    animation: bounce 0.6s ease-in-out;
+}
+
+@keyframes bounce {
+
+    0%,
+    20%,
+    50%,
+    80%,
+    100% {
+        transform: translateY(0);
+    }
+
+    40% {
+        transform: translateY(-8px);
+    }
+
+    60% {
+        transform: translateY(-4px);
+    }
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #001F54;
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px dotted black;
+}
+
+.rowDark {
+    background-color: #eeeded;
+    color: black;
+}
+
+.rowLight {
+    background-color: #ffffff;
+    color: black;
+}
+
+.cell {
+    font-size: 20px;
+    padding: 10px 5px;
+    width: 50%;
+    vertical-align: middle;
+    position: relative;
+}
+
+.cell span {
+    transition: all 150ms ease-in-out;
+    display: inline-block;
+
+}
+
+.cell:first-child {
+    font-weight: bold;
+    color: #001F54;
+}
+
+.table select {
+    width: 100%;
+    font-size: 18px;
+    background-color: white;
+    padding: 5px 10px;
+    border: 1px solid gray;
+    cursor: pointer;
+}
+
+.table select.correct {
+    border: 1px solid rgb(0, 170, 68);
+}
+
+.table select.incorrect {
+    border: 1px solid rgb(204, 0, 102);
+    animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0);
+    }
+    10%, 30%, 50%, 70%, 90% {
+        transform: translateX(-3px);
+    }
+    20%, 40%, 60%, 80% {
+        transform: translateX(3px);
+    }
+}
+
+.cell span.icon {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    left: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.icon.hidden {
+    opacity: 0;
+}
+
+.incorrectIcon {
+    color: rgb(204, 0, 102);
+}
+
+.correctIcon {
+    color: rgb(0, 170, 68);
+}
+
+.criteriaTableContainer {
+    padding-right: 5px;
+    width: 50%;
+    position: relative;
+    animation: fadeInUp 500ms ease-in-out;
+    flex-shrink: 0;
+    /* box-shadow: 60px -8px #db8f02; */
+}

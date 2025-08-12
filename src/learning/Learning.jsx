@@ -1,4 +1,3 @@
-import Nav from "../components/nav/Nav";
 import Subtitle from "../components/subtitle/Subtitle";
 import Title from "../components/title/Title";
 import styles from "./Learning.module.css";
@@ -7,12 +6,8 @@ import { useAppSettings } from "../AppSettingsContext";
 import { useEffect, useRef, useState } from "react";
 import PanelSubtitle from "../components/panelSubtitle/PanelSubtitle";
 
-/**
- * 
- * @param {{setTabs:React.Dispatch<React.SetStateAction<string>>}} props 
- * @returns 
- */
-export default function Learning(props) {
+
+export default function Learning() {
     /**
      * @type {React.RefObject<HTMLDivElement>}
      */
@@ -35,8 +30,7 @@ export default function Learning(props) {
     return (
         <>
             <div className="center">
-                <Nav></Nav>
-                <Title>Identification de crânes de singes <br></br> et d'hommes fossiles</Title>
+                
 
                 <Subtitle>
                     Visionnez les vidéos ci-dessous et découvrez à quoi être attentif lorsque vous observez un crâne <br></br>(« Bases ») ainsi que les 9 critères morphologiques qui permettent de l’identifier (« Critères »)

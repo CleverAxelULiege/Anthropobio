@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import Home from "./home/Home";
 import Learning from "./learning/Learning";
 import './types.js'
+import Nav from "./components/nav/Nav.jsx";
+import Observation from "./observation/Observation.jsx";
+import Title from "./components/title/Title.jsx";
 
 /** @type {Primate[]} */
 export const PRIMATES = data.primates;
@@ -55,8 +58,19 @@ function App() {
   return (
     <main>
       {tab === TABS.home && <Home setTabs={setTab} />}
-      {tab === TABS.learning && <Learning setTabs={setTab}></Learning>}
-      {tab === TABS.observation && <div>Observation page</div>}
+
+      {
+        [TABS.learning, TABS.observation].includes(tab) &&
+        <>
+          <Nav setTab={setTab}></Nav>
+          <div className="center">
+            <Title>Identification de crânes de singes <br></br> et d'hommes fossiles</Title>
+          </div>
+        </>
+      }
+
+      {tab === TABS.learning && <Learning></Learning>}
+      {tab === TABS.observation && <Observation></Observation>}
     </main>
   );
 }
