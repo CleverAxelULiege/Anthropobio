@@ -22,6 +22,7 @@ export default function Timeline() {
         /**@type {HTMLElement[]} */
         const markers = Array.from(timelineRef.current.querySelectorAll("[data-marker]"));
         const markersWithRect = markers.map((element) => {
+            
             const rect = element.getBoundingClientRect();
             return {
                 element: element,
@@ -31,6 +32,7 @@ export default function Timeline() {
         });
 
         markersWithRect.sort((a, b) => a.rect.left - b.rect.left);
+        const originalTop = markersWithRect[0].originalTop;
 
         
         for(let i = 0; i < markersWithRect.length; i++) {
@@ -40,32 +42,23 @@ export default function Timeline() {
                 const nextMarker = markersWithRect[j];
 
                 if(isOverlapping(currentMarker.rect, nextMarker.rect)) {
+
+                    let offset = 15;
+                    if(nextMarker.rect.top != originalTop) {
+                        offset = 5;
+                    }
                     
-                    nextMarker.rect.y -= currentMarker.rect.height;
+                    nextMarker.rect.y -= currentMarker.rect.height + offset;
                 }
             }
         }
 
-        // while (foundCollision && iterations < maxIterations) {
-        //     foundCollision = false;
-        //     iterations++;
-
-        //     for (let i = 0; i < markersWithRect.length - 1; i++) {
-        //         const currentMarker = markersWithRect[i];
-        //         const nextMarker = markersWithRect[i + 1];
-
-        //         if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
-        //             foundCollision = true;
-
-        //             nextMarker.rect.y -= currentMarker.rect.height + gapBetweenTimelineAndLabel;
-
-        //         }
-        //     }
-        // }
-
-        markersWithRect.forEach((markerData) => {
+        markersWithRect.forEach((markerData, index) => {
             const { element, rect, originalTop } = markerData;
             const offsetY = rect.top - originalTop;
+                    element.style.bottom = `calc(100% + 10px)`
+                
+                
 
             if (offsetY !== 0) {
                 console.log(offsetY);
@@ -74,8 +67,9 @@ export default function Timeline() {
                 const marker = element.querySelector("#marker");
                 marker.style.height = `${Math.abs(offsetY)}px`;
 
-                element.style.bottom = `calc(100% + ${Math.abs(offsetY )}px)`
+                    element.style.bottom = `calc(100% + ${Math.abs(offsetY)}px)`
             }
+
         });
     }, []);
 
