@@ -77,8 +77,6 @@ export default function Timeline() {
                 element.style.bottom = `calc(100% + ${Math.abs(offsetY )}px)`
             }
         });
-
-
     }, []);
 
 
