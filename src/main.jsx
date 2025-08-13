@@ -8,9 +8,7 @@ import { AppSettingsProvider } from './AppSettingsContext.jsx'
 
 
 createRoot(document.getElementById('root')).render(
-  <StrictMode>
     <AppSettingsProvider>
       <App />
     </AppSettingsProvider>
-  </StrictMode>,
 )

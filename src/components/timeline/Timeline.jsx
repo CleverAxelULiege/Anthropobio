@@ -15,72 +15,70 @@ export default function Timeline() {
     ];
 
     useEffect(() => {
-        function correctOverlappingMarkers() {
-            if (!timelineRef.current) {
-                throw new Error("No timeline ref");
-            }
-
-            /**@type {HTMLElement[]} */
-            const markers = Array.from(timelineRef.current.querySelectorAll("[data-marker]"));
-            const markersWithRect = markers.map((element) => {
-                const rect = element.getBoundingClientRect();
-                return {
-                    element: element,
-                    rect: rect,
-                    originalTop: rect.top
-                }
-            });
-
-            let foundCollision = true;
-            const gapBetweenTimelineAndLabel = 10;
-
-            while (foundCollision) {
-                foundCollision = false;
-
-                for (let i = 0; i < markersWithRect.length; i++) {
-                    const currentMarker = markersWithRect[i];
-
-                    for (let j = 0; j < markersWithRect.length; j++) {
-                        if (i === j) continue; // skip comparing the marker with itself
-
-                        const otherMarker = markersWithRect[j];
-
-                        if (isOverlapping(currentMarker.rect, otherMarker.rect)) {
-                            foundCollision = true;
-
-                            // Move the lower marker downward to resolve overlap
-                            if (otherMarker.rect.top >= currentMarker.rect.top) {
-                                otherMarker.rect.y += currentMarker.rect.height + gapBetweenTimelineAndLabel;
-                            } else {
-                                currentMarker.rect.y += otherMarker.rect.height + gapBetweenTimelineAndLabel;
-                            }
-                        }
-                    }
-                }
-            }
-
-
-            markersWithRect.forEach((markerData) => {
-                const { element, rect, originalTop } = markerData;
-                const offsetY = rect.top - originalTop;
-
-                if (offsetY !== 0) {
-                    /**@type {HTMLDivElement} */
-                    const marker = element.querySelector("#marker");
-                    marker.style.height = `${Math.abs(offsetY)}px`;
-
-                    element.style.bottom = `calc(100% + ${Math.abs(offsetY)}px)`
-                }
-            });
+        if (!timelineRef.current) {
+            throw new Error("No timeline ref");
         }
 
-        correctOverlappingMarkers(); // Run initially (your original effect)
+        /**@type {HTMLElement[]} */
+        const markers = Array.from(timelineRef.current.querySelectorAll("[data-marker]"));
+        const markersWithRect = markers.map((element) => {
+            const rect = element.getBoundingClientRect();
+            return {
+                element: element,
+                rect: rect,
+                originalTop: rect.top
+            }
+        });
 
-        window.addEventListener('resize', correctOverlappingMarkers);
+        markersWithRect.sort((a, b) => a.rect.left - b.rect.left);
 
-        return () => {
-            window.removeEventListener('resize', correctOverlappingMarkers);
-        };
+        
+        for(let i = 0; i < markersWithRect.length; i++) {
+            const currentMarker = markersWithRect[i];
+
+            for(let j = i + 1; j < markersWithRect.length; j++) {
+                const nextMarker = markersWithRect[j];
+
+                if(isOverlapping(currentMarker.rect, nextMarker.rect)) {
+                    
+                    nextMarker.rect.y -= currentMarker.rect.height;
+                }
+            }
+        }
+
+        // while (foundCollision && iterations < maxIterations) {
+        //     foundCollision = false;
+        //     iterations++;
+
+        //     for (let i = 0; i < markersWithRect.length - 1; i++) {
+        //         const currentMarker = markersWithRect[i];
+        //         const nextMarker = markersWithRect[i + 1];
+
+        //         if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
+        //             foundCollision = true;
+
+        //             nextMarker.rect.y -= currentMarker.rect.height + gapBetweenTimelineAndLabel;
+
+        //         }
+        //     }
+        // }
+
+        markersWithRect.forEach((markerData) => {
+            const { element, rect, originalTop } = markerData;
+            const offsetY = rect.top - originalTop;
+
+            if (offsetY !== 0) {
+                console.log(offsetY);
+                
+                /**@type {HTMLDivElement} */
+                const marker = element.querySelector("#marker");
+                marker.style.height = `${Math.abs(offsetY)}px`;
+
+                element.style.bottom = `calc(100% + ${Math.abs(offsetY )}px)`
+            }
+        });
+
+
     }, []);
 
 

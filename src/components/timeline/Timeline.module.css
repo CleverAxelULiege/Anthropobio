@@ -31,7 +31,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    bottom: calc(100% + 10px);
+    bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
