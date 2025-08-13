@@ -5,6 +5,7 @@ import './types.js'
 import Nav from "./components/nav/Nav.jsx";
 import Observation from "./observation/Observation.jsx";
 import Title from "./components/title/Title.jsx";
+import Timeline from "./components/timeline/Timeline.jsx";
 
 /** @type {Primate[]} */
 export const PRIMATES = data.primates;
@@ -57,7 +58,8 @@ function App() {
 
   return (
     <main>
-      {tab === TABS.home && <Home setTabs={setTab} />}
+      <Timeline></Timeline>
+      {/* {tab === TABS.home && <Home setTabs={setTab} />}
 
       {
         [TABS.learning, TABS.observation].includes(tab) &&
@@ -70,7 +72,7 @@ function App() {
       }
 
       {tab === TABS.learning && <Learning></Learning>}
-      {tab === TABS.observation && <Observation></Observation>}
+      {tab === TABS.observation && <Observation></Observation>} */}
     </main>
   );
 }
