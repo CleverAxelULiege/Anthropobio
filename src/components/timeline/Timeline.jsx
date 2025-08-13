@@ -14,15 +14,22 @@ export default function Timeline() {
         { year: maxyear },
     ];
 
-    useEffect(() => {
+    const recalculateStuff = () => {
         if (!timelineRef.current) {
             throw new Error("No timeline ref");
         }
 
         /**@type {HTMLElement[]} */
         const markers = Array.from(timelineRef.current.querySelectorAll("[data-marker]"));
+        markers.forEach((marker) => {
+            marker.style.bottom = `100%`;
+            marker.querySelector("#marker").style.height = "";
+        })
+        
+        markers[0].getBoundingClientRect();
+        markers[0].getBoundingClientRect();
         const markersWithRect = markers.map((element) => {
-            
+
             const rect = element.getBoundingClientRect();
             return {
                 element: element,
@@ -34,43 +41,48 @@ export default function Timeline() {
         markersWithRect.sort((a, b) => a.rect.left - b.rect.left);
         const originalTop = markersWithRect[0].originalTop;
 
-        
-        for(let i = 0; i < markersWithRect.length; i++) {
+
+        for (let i = 0; i < markersWithRect.length; i++) {
             const currentMarker = markersWithRect[i];
 
-            for(let j = i + 1; j < markersWithRect.length; j++) {
+            for (let j = i + 1; j < markersWithRect.length; j++) {
                 const nextMarker = markersWithRect[j];
 
-                if(isOverlapping(currentMarker.rect, nextMarker.rect)) {
+                if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
 
                     let offset = 15;
-                    if(nextMarker.rect.top != originalTop) {
+                    if (nextMarker.rect.top != originalTop) {
                         offset = 5;
                     }
-                    
+
                     nextMarker.rect.y -= currentMarker.rect.height + offset;
                 }
             }
         }
 
-        markersWithRect.forEach((markerData, index) => {
+        markersWithRect.forEach((markerData) => {
             const { element, rect, originalTop } = markerData;
             const offsetY = rect.top - originalTop;
-                    element.style.bottom = `calc(100% + 10px)`
-                
-                
-
+            element.style.bottom = `calc(100% + 10px)`
             if (offsetY !== 0) {
-                console.log(offsetY);
-                
+
                 /**@type {HTMLDivElement} */
                 const marker = element.querySelector("#marker");
                 marker.style.height = `${Math.abs(offsetY)}px`;
 
-                    element.style.bottom = `calc(100% + ${Math.abs(offsetY)}px)`
+                element.style.bottom = `calc(100% + ${Math.abs(offsetY)}px)`
             }
 
         });
+    }
+
+    useEffect(() => {
+        recalculateStuff();
+
+        window.addEventListener("resize", recalculateStuff);
+        return () => {
+            window.removeEventListener("resize", recalculateStuff);
+        }
     }, []);
 
 
