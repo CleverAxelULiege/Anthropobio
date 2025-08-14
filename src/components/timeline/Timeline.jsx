@@ -24,9 +24,8 @@ export default function Timeline() {
         markers.forEach((marker) => {
             marker.style.bottom = `100%`;
             marker.nextElementSibling.style.height = "";
-            // marker.querySelector("#marker").style.height = "";
         })
-        
+
         markers[0].getBoundingClientRect();
         markers[0].getBoundingClientRect();
         const markersWithRect = markers.map((element) => {
@@ -67,7 +66,7 @@ export default function Timeline() {
             element.style.bottom = `calc(100% + 10px)`
             if (offsetY !== 0) {
 
-                
+
 
                 /**@type {HTMLDivElement} */
                 element.nextElementSibling.style.height = `${Math.abs(offsetY)}px`;
@@ -126,11 +125,11 @@ function Event(props) {
 
 
         if (labelRect.left < timelineRect.left) {
-            labelElement.style.left = '0';
+            labelElement.style.left = '-2px'; //width of the red line marker
             labelElement.style.transform = 'translateX(0)';
         } else if (labelRect.right > timelineRect.right) {
             labelElement.style.left = 'auto';
-            labelElement.style.right = '0';
+            labelElement.style.right = '-2px'; //width of the red line marker
             labelElement.style.transform = 'translateX(0)';
         }
 
@@ -138,12 +137,14 @@ function Event(props) {
 
     }, []);
     return (
-        <div className={styles.event} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }}>
+        <>
+            <div className={styles.event} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }}></div>
             <div ref={ref} data-marker="" className={styles.yearLabel} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }}>
                 {(props.label.toString().length > 4 ? numberWithSpaces(props.label) : props.label)}
             </div>
-            <div className={styles.marker} id="marker"></div>
-        </div>
+            <div className={styles.marker} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }} id="marker"></div>
+        </>
+
 
     )
 }
