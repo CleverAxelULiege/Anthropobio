@@ -187,7 +187,7 @@ export default function Timeline() {
         };
 
         const padding = 10;
-        timelineRef.current.style.minHeight = `${calculateRequiredHeight() + 2 * padding}px`;        
+        timelineRef.current.style.minHeight = `${calculateRequiredHeight() + 2 * padding}px`;
     };
 
     useEffect(() => {
@@ -218,21 +218,35 @@ export default function Timeline() {
 
 
     return (
-        <div className={styles.timelineContainer}>
-            <div ref={timelineRef} id="timeline" className={styles.timeline}>
-                <div className={styles.track}>
-                    {
-                        events_.map((event) => {
-                            return (
-                                <Event onMouseHoverLabel={onMouseHoverLabel} onClickLabel={onClickLabel} cursor={cursorRef.current} key={event.id} label={event.year} id={event.id} isBottom={event.isBottom}></Event>
-                            );
-                        })
-                    }
+        <>
+            <div className={styles.timelineContainer}>
+                <div ref={timelineRef} id="timeline" className={styles.timeline}>
+                    <div className={styles.track}>
+                        {
+                            events_.map((event) => {
+                                return (
+                                    <Event onMouseHoverLabel={onMouseHoverLabel} onClickLabel={onClickLabel} cursor={cursorRef.current} key={event.id} label={event.year} id={event.id} isBottom={event.isBottom}></Event>
+                                );
+                            })
+                        }
 
-                    <div ref={cursorRef} className={styles.cursor}></div>
+                        <div ref={cursorRef} className={styles.cursor}></div>
+                    </div>
                 </div>
             </div>
-        </div>
+            <div className={styles.slideshowContainer}>
+                <div className={styles.slideshowWrapper}>
+                    <div className={styles.slideshowTrack}>
+                        <div className={styles.slideShowSlide}>
+                            <div className={styles.year}>1</div>
+                        </div>
+                        <div className={styles.slideShowSlide}>
+                            <div className={styles.year}>2</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </>
     )
 }
 
