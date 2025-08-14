@@ -26,105 +26,91 @@ export default function Timeline() {
             throw new Error("No timeline ref");
         }
 
-        //Reset everything before calculating its height/new position
+        //Reset everything before calculating its height/new position and override what's on the CSS.
         /**@type {HTMLElement[]} */
         const markers = Array.from(timelineRef.current.querySelectorAll("[data-marker]"));
+
+        // Reset marker positions
         markers.forEach((marker) => {
-            if(marker.getAttribute("data-is-bottom") == "true") {
-                marker.style.top =  `100%`;
+            if (marker.getAttribute("data-is-bottom") == "true") {
+                marker.style.top = `100%`;
             } else {
-                marker.style.bottom =  `100%`;
+                marker.style.bottom = `100%`;
             }
             marker.nextElementSibling.style.height = "";
-        })
+        });
 
         //wait for the dom to update
         markers[0].getBoundingClientRect();
-        markers[0].getBoundingClientRect();
 
+        // Create marker data with rectangles
         const markersWithRect = markers.map((element) => {
-
             const rect = element.getBoundingClientRect();
             return {
                 element: element,
                 rect: rect,
                 originalTop: rect.top,
                 isBottom: element.getAttribute("data-is-bottom") == "true"
-            }
+            };
         });
 
-        const markersBottom = markersWithRect.filter((m) => m.isBottom);
-        const markersTop = markersWithRect.filter((m) => !m.isBottom);
+        // Separate and sort markers
+        const markersBottom = markersWithRect.filter((m) => m.isBottom).sort((a, b) => a.rect.left - b.rect.left);
+        const markersTop = markersWithRect.filter((m) => !m.isBottom).sort((a, b) => a.rect.left - b.rect.left);
 
-        markersBottom.sort((a, b) => a.rect.left - b.rect.left);
-        markersTop.sort((a, b) => a.rect.left - b.rect.left);
-
-
-        // markersWithRect.sort((a, b) => a.rect.left - b.rect.left);
         const originalTop = markersTop[0].originalTop;
         const originalBottom = markersBottom[0].originalTop;
 
-        for (let i = 0; i < markersTop.length; i++) {
-            const currentMarker = markersTop[i];
-            for (let j = i + 1; j < markersTop.length; j++) {
-                const nextMarker = markersTop[j];
-
-                if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
-
-                    let offset = 15;
-                    if (nextMarker.rect.top != originalTop) {
-                        offset = 5;
+        // Helper function to resolve overlaps
+        const resolveOverlaps = (markersList, originalPosition, moveDown = false) => {
+            for (let i = 0; i < markersList.length; i++) {
+                const currentMarker = markersList[i];
+                for (let j = i + 1; j < markersList.length; j++) {
+                    const nextMarker = markersList[j];
+                    if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
+                        const offset = nextMarker.rect.top !== originalPosition ? 5 : 15;
+                        const direction = moveDown ? 1 : -1;
+                        nextMarker.rect.y += direction * (currentMarker.rect.height + offset);
                     }
-
-                    nextMarker.rect.y -= currentMarker.rect.height + offset;
                 }
             }
-        }
+        };
 
-        for (let i = 0; i < markersBottom.length; i++) {
-            const currentMarker = markersBottom[i];
-            for (let j = i + 1; j < markersBottom.length; j++) {
-                const nextMarker = markersBottom[j];
+        // Resolve overlaps for both marker types
+        resolveOverlaps(markersTop, originalTop, false);
+        resolveOverlaps(markersBottom, originalBottom, true);
 
-                if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
+        // Helper function to apply positioning
+        const applyPositioning = (markersList, isBottom = false) => {
+            markersList.forEach((markerData) => {
+                const { element, rect, originalTop } = markerData;
+                const offsetY = rect.top - originalTop;
+                const basePosition = `calc(100% + 10px)`;
 
-                    let offset = 15;
-                    if (nextMarker.rect.top != originalBottom) {
-                        offset = 5;
-                    }
-
-                    nextMarker.rect.y += currentMarker.rect.height + offset;
+                if (isBottom) {
+                    element.style.top = basePosition;
+                } else {
+                    element.style.bottom = basePosition;
                 }
-            }
-        }
-        
 
-        markersTop.forEach((markerData) => {
-            const { element, rect, originalTop } = markerData;
-            const offsetY = rect.top - originalTop;
-            element.style.bottom = `calc(100% + 10px)`
-            if (offsetY !== 0) {
-                //should be the marker
-                element.nextElementSibling.style.height = `${Math.abs(offsetY)}px`;
+                if (offsetY !== 0) {
+                    //should be the marker
+                    const absOffset = Math.abs(offsetY);
+                    element.nextElementSibling.style.height = `${absOffset}px`;
 
-                element.style.bottom = `calc(100% + ${Math.abs(offsetY)}px)`
-            }
+                    if (isBottom) {
+                        element.style.top = `calc(100% + ${absOffset}px)`;
+                    } else {
+                        element.style.bottom = `calc(100% + ${absOffset}px)`;
+                    }
+                }
+            });
+        };
 
-        });
-
-        markersBottom.forEach((markerData) => {
-            const { element, rect, originalTop } = markerData;
-            const offsetY = rect.top - originalTop;
-            element.style.top = `calc(100% + 10px)`
-            if (offsetY !== 0) {
-                //should be the marker
-                element.nextElementSibling.style.height = `${Math.abs(offsetY)}px`;
-
-                element.style.top = `calc(100% + ${Math.abs(offsetY)}px)`
-            }
-
-        });
-    }
+        // Apply positioning to both marker types
+        applyPositioning(markersTop, false);
+        applyPositioning(markersBottom, true);
+    };
 
     useEffect(() => {
         /** @type {{year:number, description:string, isBottom:boolean, id:string}[]} */
