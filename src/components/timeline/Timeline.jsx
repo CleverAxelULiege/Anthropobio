@@ -29,7 +29,7 @@ export default function Timeline() {
 
     const onClickLabel = (id, year, positionTimeline) => {
         setCursorPositon(positionTimeline)
-        
+
         const eventElements = timelineRef.current.querySelectorAll("[data-event-id]");
         if (previousLabelIdClicked.current == id) {
             eventElements.forEach((element) => {
@@ -52,7 +52,7 @@ export default function Timeline() {
 
     const onMouseHoverLabel = (id, year, positionTimeline) => {
         //has clicked / locked a label
-        if(previousLabelIdClicked.current != "")
+        if (previousLabelIdClicked.current != "")
             return;
         setCursorPositon(positionTimeline)
     }
@@ -137,6 +137,7 @@ export default function Timeline() {
                 }
 
                 if (offsetY !== 0) {
+
                     //should be the marker
                     const absOffset = Math.abs(offsetY);
                     element.nextElementSibling.style.height = `${absOffset}px`;
@@ -153,6 +154,40 @@ export default function Timeline() {
         // Apply positioning to both marker types
         applyPositioning(markersTop, false);
         applyPositioning(markersBottom, true);
+
+        const calculateRequiredHeight = () => {
+            let maxTopExtent = 0;
+            let maxBottomExtent = 0;
+
+            // Calculate maximum extent above timeline (top markers)
+            markersTop.forEach((markerData) => {
+                const { rect, originalTop } = markerData;
+                const offsetY = rect.top - originalTop;
+                const markerHeight = rect.height;
+                const totalExtent = Math.abs(offsetY) + markerHeight + 10; // 10px base offset
+                maxTopExtent = Math.max(maxTopExtent, totalExtent);
+            });
+
+            // Calculate maximum extent below timeline (bottom markers)
+            markersBottom.forEach((markerData) => {
+                const { rect, originalTop } = markerData;
+                const offsetY = rect.top - originalTop;
+                const markerHeight = rect.height;
+                const totalExtent = Math.abs(offsetY) + markerHeight + 10; // 10px base offset
+                maxBottomExtent = Math.max(maxBottomExtent, totalExtent);
+            });
+
+            const topHeight = maxTopExtent;
+            const bottomHeight = maxBottomExtent;
+
+            const requiredHeight = Math.max(topHeight, bottomHeight) * 2;
+            return requiredHeight;
+
+
+        };
+
+        const padding = 10;
+        timelineRef.current.style.minHeight = `${calculateRequiredHeight() + 2 * padding}px`;        
     };
 
     useEffect(() => {
