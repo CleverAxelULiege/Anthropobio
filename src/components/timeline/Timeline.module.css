@@ -44,7 +44,7 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    bottom: 100%;
+    /* bottom: 100%; */
     left: 50%;
     transform: translateX(-50%);
     white-space: nowrap;
@@ -56,10 +56,26 @@
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
 }
 
+.yearLabel[data-is-bottom="true"] {
+    top: 100%;
+}
+
+.yearLabel[data-is-bottom="false"] {
+    bottom: 100%;
+}
+
+.yearLabel[data-is-bottom="true"] + .marker {
+    top: 100%;
+}
+
+.yearLabel[data-is-bottom="false"] + .marker {
+    bottom: 100%;
+}
+
 .marker {
     z-index: 1;
     position: absolute;
-    bottom: 100%;
+    /* bottom: 100%; */
     height: 10px;
     left: 50%;
     width: 2px;

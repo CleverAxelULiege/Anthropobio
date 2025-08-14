@@ -48,7 +48,8 @@ export default function Timeline() {
             }
         });
 
-        console.log(markersWithRect);
+        const markersBottom = markersWithRect.filter((m) => m.isBottom);
+        const markersTop = markersWithRect.filter((m) => !m.isBottom);
         
 
         markersWithRect.sort((a, b) => a.rect.left - b.rect.left);
