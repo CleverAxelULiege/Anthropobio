@@ -80,6 +80,23 @@ export default function Timeline() {
                 }
             }
         }
+
+        for (let i = 0; i < markersBottom.length; i++) {
+            const currentMarker = markersBottom[i];
+            for (let j = i + 1; j < markersBottom.length; j++) {
+                const nextMarker = markersBottom[j];
+
+                if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
+
+                    let offset = 15;
+                    if (nextMarker.rect.top != originalBottom) {
+                        offset = 5;
+                    }
+
+                    nextMarker.rect.y += currentMarker.rect.height + offset;
+                }
+            }
+        }
         
 
         markersTop.forEach((markerData) => {
@@ -91,6 +108,19 @@ export default function Timeline() {
                 element.nextElementSibling.style.height = `${Math.abs(offsetY)}px`;
 
                 element.style.bottom = `calc(100% + ${Math.abs(offsetY)}px)`
+            }
+
+        });
+
+        markersBottom.forEach((markerData) => {
+            const { element, rect, originalTop } = markerData;
+            const offsetY = rect.top - originalTop;
+            element.style.top = `calc(100% + 10px)`
+            if (offsetY !== 0) {
+                //should be the marker
+                element.nextElementSibling.style.height = `${Math.abs(offsetY)}px`;
+
+                element.style.top = `calc(100% + ${Math.abs(offsetY)}px)`
             }
 
         });
