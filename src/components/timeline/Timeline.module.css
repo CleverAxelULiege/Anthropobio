@@ -107,3 +107,11 @@
     border-radius: 50%;
     transform: translate(-50%, -50%);
 }
+
+.eventContainer {
+    opacity: 0.5;
+    transition: all 150ms ease-in-out;
+}
+.eventContainer.active {
+    opacity: 1;
+}

@@ -6,6 +6,7 @@ const maxyear = new Date().getFullYear();
 const events = [
     { year: minYear },
     { year: -1500000 },
+    { year: -1500000 },
     { year: -1000000 },
     { year: maxyear },
 ];
@@ -22,6 +23,45 @@ export default function Timeline() {
 
     /**@type {React.RefObject<HTMLDivElement>} */
     const cursorRef = useRef(null);
+
+    /**@type {React.RefObject<string>} */
+    const previousLabelIdClicked = useRef("");
+
+    const onClickLabel = (id, year, positionTimeline) => {
+        setCursorPositon(positionTimeline)
+        
+        const eventElements = timelineRef.current.querySelectorAll("[data-event-id]");
+        if (previousLabelIdClicked.current == id) {
+            eventElements.forEach((element) => {
+                element.classList.add(styles.active);
+            });
+            previousLabelIdClicked.current = "";
+            return;
+        }
+
+        eventElements.forEach((element) => {
+            if (element.getAttribute("data-event-id") == id) {
+                element.classList.add(styles.active);
+            } else {
+                element.classList.remove(styles.active);
+            }
+        });
+
+        previousLabelIdClicked.current = id;
+    }
+
+    const onMouseHoverLabel = (id, year, positionTimeline) => {
+        //has clicked / locked a label
+        if(previousLabelIdClicked.current != "")
+            return;
+        setCursorPositon(positionTimeline)
+    }
+
+    const setCursorPositon = (position) => {
+        cursorRef.current.style.left = `${position}%`;
+    }
+
+
 
 
     const recalculateStuff = () => {
@@ -149,7 +189,7 @@ export default function Timeline() {
                     {
                         events_.map((event) => {
                             return (
-                                <Event cursor={cursorRef.current} key={event.id} label={event.year} id={event.id} isBottom={event.isBottom}></Event>
+                                <Event onMouseHoverLabel={onMouseHoverLabel} onClickLabel={onClickLabel} cursor={cursorRef.current} key={event.id} label={event.year} id={event.id} isBottom={event.isBottom}></Event>
                             );
                         })
                     }
@@ -162,7 +202,7 @@ export default function Timeline() {
 }
 
 /**
- * @param {{label:string, id:string, isBottom:boolean, cursor:HTMLElement}} props 
+ * @param { {label:string, id:string, isBottom:boolean, cursor:HTMLElement, onClickLabel : (id:string, year:number|string, positionTimeline:number) => void, onMouseHoverLabel : (id:string, year:number|string, positionTimeline:number) => void}} props 
  * @returns 
  */
 function Event(props) {
@@ -197,17 +237,15 @@ function Event(props) {
 
     }, []);
 
-    const onHoverLabel = () => {
-        props.cursor.style.left = `${positionOnTimeline.current}%`;
-    }
+
     return (
-        <>
-            <div className={styles.event} data-event-id={props.id} style={{ left: `${positionOnTimeline.current}%` }}></div>
-            <div ref={ref} onMouseEnter={() => onHoverLabel()} data-marker="" data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${positionOnTimeline.current}%` }}>
+        <div data-event-id={props.id} className={styles.eventContainer + " " + styles.active}>
+            <div className={styles.event} style={{ left: `${positionOnTimeline.current}%` }}></div>
+            <div ref={ref} onClick={() => { props.onClickLabel(props.id, props.label, positionOnTimeline.current) }} onMouseEnter={() => props.onMouseHoverLabel(props.id, props.label, positionOnTimeline.current)} data-marker="" data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${positionOnTimeline.current}%` }}>
                 {(props.label.toString().length > 4 ? numberWithSpaces(props.label) : props.label)}
             </div>
             <div className={styles.marker} style={{ left: `${positionOnTimeline.current}%` }} id="marker"></div>
-        </>
+        </div>
 
 
     )
