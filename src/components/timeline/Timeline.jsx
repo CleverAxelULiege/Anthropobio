@@ -20,6 +20,9 @@ export default function Timeline() {
     /**@type {React.RefObject<HTMLDivElement>} */
     const timelineRef = useRef(null);
 
+    /**@type {React.RefObject<HTMLDivElement>} */
+    const cursorRef = useRef(null);
+
 
     const recalculateStuff = () => {
         if (!timelineRef.current) {
@@ -125,14 +128,18 @@ export default function Timeline() {
 
         setEvents(mappedEvents);
 
-
-        // recalculateStuff();
-
         window.addEventListener("resize", recalculateStuff);
         return () => {
             window.removeEventListener("resize", recalculateStuff);
         }
     }, []);
+
+    useEffect(() => {
+        if (events_.length == 0)
+            return;
+
+        recalculateStuff();
+    }, [events_]);
 
 
     return (
@@ -142,10 +149,12 @@ export default function Timeline() {
                     {
                         events_.map((event) => {
                             return (
-                                <Event key={event.id} label={event.year} id={event.id} isBottom={event.isBottom}></Event>
+                                <Event cursor={cursorRef.current} key={event.id} label={event.year} id={event.id} isBottom={event.isBottom}></Event>
                             );
                         })
                     }
+
+                    <div ref={cursorRef} className={styles.cursor}></div>
                 </div>
             </div>
         </div>
@@ -153,12 +162,16 @@ export default function Timeline() {
 }
 
 /**
- * @param {{label:string, id:string, isBottom:boolean}} props 
+ * @param {{label:string, id:string, isBottom:boolean, cursor:HTMLElement}} props 
  * @returns 
  */
 function Event(props) {
     /** @type {React.RefObject<HTMLDivElement>} */
     const ref = useRef(null);
+
+
+    const positionOnTimeline = useRef(calculatePositionOnTimeline(minYear, maxyear, props.label));
+
     useEffect(() => {
         const labelElement = ref.current;
 
@@ -182,15 +195,18 @@ function Event(props) {
         }
 
 
-
     }, []);
+
+    const onHoverLabel = () => {
+        props.cursor.style.left = `${positionOnTimeline.current}%`;
+    }
     return (
         <>
-            <div className={styles.event} data-event-id={props.id} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }}></div>
-            <div ref={ref} data-marker="" data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }}>
+            <div className={styles.event} data-event-id={props.id} style={{ left: `${positionOnTimeline.current}%` }}></div>
+            <div ref={ref} onMouseEnter={() => onHoverLabel()} data-marker="" data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${positionOnTimeline.current}%` }}>
                 {(props.label.toString().length > 4 ? numberWithSpaces(props.label) : props.label)}
             </div>
-            <div className={styles.marker} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }} id="marker"></div>
+            <div className={styles.marker} style={{ left: `${positionOnTimeline.current}%` }} id="marker"></div>
         </>
 
 

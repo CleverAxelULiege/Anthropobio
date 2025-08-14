@@ -64,11 +64,11 @@
     bottom: 100%;
 }
 
-.yearLabel[data-is-bottom="true"] + .marker {
+.yearLabel[data-is-bottom="true"]+.marker {
     top: 100%;
 }
 
-.yearLabel[data-is-bottom="false"] + .marker {
+.yearLabel[data-is-bottom="false"]+.marker {
     bottom: 100%;
 }
 
@@ -81,4 +81,29 @@
     width: 2px;
     transform: translateX(-50%);
     background-color: red;
+}
+
+.cursor {
+    position: absolute;
+    z-index: 1000;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgb(36, 96, 226);
+    border-radius: 50%;
+    width: 12px;
+    height: 12px;
+    transition: all 150ms ease-in-out;
+}
+
+.cursor::after {
+    content: "";
+    position: absolute;
+    width: 30%;
+    height: 30%;
+    background-color: rgb(255, 255, 255);
+    top: 50%;
+    left: 50%;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
 }
