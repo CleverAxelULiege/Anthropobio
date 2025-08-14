@@ -26,10 +26,15 @@ export default function Timeline() {
             throw new Error("No timeline ref");
         }
 
+        //Reset everything before calculating its height/new position
         /**@type {HTMLElement[]} */
         const markers = Array.from(timelineRef.current.querySelectorAll("[data-marker]"));
         markers.forEach((marker) => {
-            marker.style.bottom = `100%`;
+            if(marker.getAttribute("data-is-bottom") == "true") {
+                marker.style.top =  `100%`;
+            } else {
+                marker.style.bottom =  `100%`;
+            }
             marker.nextElementSibling.style.height = "";
         })
 
@@ -50,17 +55,19 @@ export default function Timeline() {
 
         const markersBottom = markersWithRect.filter((m) => m.isBottom);
         const markersTop = markersWithRect.filter((m) => !m.isBottom);
-        
 
-        markersWithRect.sort((a, b) => a.rect.left - b.rect.left);
-        const originalTop = markersWithRect[0].originalTop;
+        markersBottom.sort((a, b) => a.rect.left - b.rect.left);
+        markersTop.sort((a, b) => a.rect.left - b.rect.left);
 
 
-        for (let i = 0; i < markersWithRect.length; i++) {
-            const currentMarker = markersWithRect[i];
+        // markersWithRect.sort((a, b) => a.rect.left - b.rect.left);
+        const originalTop = markersTop[0].originalTop;
+        const originalBottom = markersBottom[0].originalTop;
 
-            for (let j = i + 1; j < markersWithRect.length; j++) {
-                const nextMarker = markersWithRect[j];
+        for (let i = 0; i < markersTop.length; i++) {
+            const currentMarker = markersTop[i];
+            for (let j = i + 1; j < markersTop.length; j++) {
+                const nextMarker = markersTop[j];
 
                 if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
 
@@ -73,15 +80,13 @@ export default function Timeline() {
                 }
             }
         }
+        
 
-        markersWithRect.forEach((markerData) => {
+        markersTop.forEach((markerData) => {
             const { element, rect, originalTop } = markerData;
             const offsetY = rect.top - originalTop;
             element.style.bottom = `calc(100% + 10px)`
             if (offsetY !== 0) {
-
-
-
                 //should be the marker
                 element.nextElementSibling.style.height = `${Math.abs(offsetY)}px`;
 
@@ -98,13 +103,13 @@ export default function Timeline() {
                 id: generateUniqueId(),
                 year: e.year,
                 description: "",
-                isBottom : index % 2 == 0
+                isBottom: index % 2 == 0
             }
         });
 
         setEvents(mappedEvents);
 
-        
+
         // recalculateStuff();
 
         window.addEventListener("resize", recalculateStuff);
