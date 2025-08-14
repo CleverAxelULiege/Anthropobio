@@ -151,6 +151,11 @@
     position: relative;
     overflow: hidden;
     padding: 5px 0;
+    background-color: white;
+}
+
+.slideshowSlide:nth-child(odd){
+    background-color: #e7e9eb;
 }
 
 .slideshowSlide .year {
