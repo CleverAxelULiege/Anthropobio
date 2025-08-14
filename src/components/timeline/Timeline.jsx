@@ -26,8 +26,10 @@ export default function Timeline() {
             marker.nextElementSibling.style.height = "";
         })
 
+        //wait for the dom to update
         markers[0].getBoundingClientRect();
         markers[0].getBoundingClientRect();
+
         const markersWithRect = markers.map((element) => {
 
             const rect = element.getBoundingClientRect();
@@ -68,7 +70,7 @@ export default function Timeline() {
 
 
 
-                /**@type {HTMLDivElement} */
+                //should be the marker
                 element.nextElementSibling.style.height = `${Math.abs(offsetY)}px`;
 
                 element.style.bottom = `calc(100% + ${Math.abs(offsetY)}px)`
