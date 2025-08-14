@@ -1,18 +1,25 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import styles from "./Timeline.module.css"
 const minYear = -8_000_000;
 const maxyear = new Date().getFullYear();
+
+const events = [
+    { year: minYear },
+    { year: -1500000 },
+    { year: -1000000 },
+    { year: maxyear },
+];
+
 export default function Timeline() {
+
+    /**
+     * @type {ReturnType<typeof useState<{year:number, description:string, isBottom:boolean, id:string}[]>>}
+     */
+    const [events_, setEvents] = useState([]);
 
     /**@type {React.RefObject<HTMLDivElement>} */
     const timelineRef = useRef(null);
 
-    const events = [
-        { year: minYear },
-        { year: -1500000 },
-        { year: -1000000 },
-        { year: maxyear },
-    ];
 
     const recalculateStuff = () => {
         if (!timelineRef.current) {
@@ -36,9 +43,13 @@ export default function Timeline() {
             return {
                 element: element,
                 rect: rect,
-                originalTop: rect.top
+                originalTop: rect.top,
+                isBottom: element.getAttribute("data-is-bottom") == "true"
             }
         });
+
+        console.log(markersWithRect);
+        
 
         markersWithRect.sort((a, b) => a.rect.left - b.rect.left);
         const originalTop = markersWithRect[0].originalTop;
@@ -80,7 +91,20 @@ export default function Timeline() {
     }
 
     useEffect(() => {
-        recalculateStuff();
+        /** @type {{year:number, description:string, isBottom:boolean, id:string}[]} */
+        let mappedEvents = events.map((e, index) => {
+            return {
+                id: generateUniqueId(),
+                year: e.year,
+                description: "",
+                isBottom : index % 2 == 0
+            }
+        });
+
+        setEvents(mappedEvents);
+
+        
+        // recalculateStuff();
 
         window.addEventListener("resize", recalculateStuff);
         return () => {
@@ -94,9 +118,9 @@ export default function Timeline() {
             <div ref={timelineRef} id="timeline" className={styles.timeline}>
                 <div className={styles.track}>
                     {
-                        events.map((event, index) => {
+                        events_.map((event) => {
                             return (
-                                <Event key={index} label={event.year}></Event>
+                                <Event key={event.id} label={event.year} id={event.id} isBottom={event.isBottom}></Event>
                             );
                         })
                     }
@@ -107,7 +131,7 @@ export default function Timeline() {
 }
 
 /**
- * @param {{label:string}} props 
+ * @param {{label:string, id:string, isBottom:boolean}} props 
  * @returns 
  */
 function Event(props) {
@@ -140,8 +164,8 @@ function Event(props) {
     }, []);
     return (
         <>
-            <div className={styles.event} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }}></div>
-            <div ref={ref} data-marker="" className={styles.yearLabel} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }}>
+            <div className={styles.event} data-event-id={props.id} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }}></div>
+            <div ref={ref} data-marker="" data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }}>
                 {(props.label.toString().length > 4 ? numberWithSpaces(props.label) : props.label)}
             </div>
             <div className={styles.marker} style={{ left: `${calculatePositionOnTimeline(minYear, maxyear, props.label)}%` }} id="marker"></div>
