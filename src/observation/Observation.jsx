@@ -12,6 +12,10 @@ export default function Observation() {
      */
     const carouselTrackRef = useRef(null);
     /**
+     * @type {React.RefObject<HTMLDivElement>}
+     */
+    const timelineRef = useRef(null);
+    /**
      * @type {React.RefObject<(year:string, description:string, imgUrl:string) => void>}
      */
     const setNewEventRef = useRef(null);
@@ -36,12 +40,19 @@ export default function Observation() {
         const correctAnswers = carouselTrackRef.current.querySelectorAll(`select.${styles.correct}`);
         const nbrQuestions = 1;
         if(correctAnswers.length == nbrQuestions) {
-            console.log(primate);
             
             setNewEventRef.current(primate.year, primate.fullName, primate.skullImgURL)
             setToggleTimeline(true);
         }        
     }
+
+    useEffect(() => {
+        if(toggleTimeline){
+            setTimeout(() => {
+                timelineRef.current.scrollIntoView({behavior: "smooth", block: "start"});
+            }, 100);
+        }
+    }, [toggleTimeline])
 
     return (
         <>
@@ -63,7 +74,7 @@ export default function Observation() {
                             <div>
                                 <Skull3DDislpay primate={primate} onChangeForm={onChangeForm} onClickGoToSkullDisplay={onClickGoToSkullDisplay}></Skull3DDislpay>
                             </div>
-                            <div hidden={!toggleTimeline}>
+                            <div ref={timelineRef} hidden={!toggleTimeline} style={{paddingBottom: "10px"}}>
                                 <Timeline setNewEvent={setNewEventRef}></Timeline>
                             </div>
                         </div>

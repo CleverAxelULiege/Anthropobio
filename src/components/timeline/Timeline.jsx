@@ -151,11 +151,10 @@ export default function Timeline(props) {
                 for (let j = i + 1; j < markersList.length; j++) {
                     const nextMarker = markersList[j];
                     if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
-                        console.log(currentMarker);
-                        
-                        const offset = nextMarker.rect.top !== originalPosition ? 5 : 15;
+
+                        const offset = nextMarker.rect.top !== originalPosition ? 15 : 15;
                         const direction = moveDown ? 1 : -1;
-                        nextMarker.rect.y += direction * (nextMarker.rect.height + offset);
+                        nextMarker.rect.y += direction * (Math.max(nextMarker.rect.height, currentMarker.rect.height) + offset);
                     }
                 }
             }
@@ -262,15 +261,25 @@ export default function Timeline(props) {
         }
 
 
+        const id = generateUniqueId();
 
-
-        setEvents(prevEvents => {
+        setEvents((prevEvents) => {
             const tempEvents = prevEvents.filter((event) => event.imgUrl == null);
-            tempEvents.push({ id: generateUniqueId(), description: description, imgUrl: imgUrl, isBottom: false, year: year });
+            tempEvents.push({ id: id, description: description, imgUrl: imgUrl, isBottom: false, year: year });
             return tempEvents;
-        }
+        });
 
-        );
+        setTimeout(() => {
+            //event element on timeline
+            const eventElement = timelineRef.current.querySelector(`[data-event-id="${id}"]`);
+
+            const slideEvent = slideshowTimelineRef.current.querySelector(`[data-slide-event-id="${id}"]`);
+
+            setCursorPositon(eventElement.querySelector("." + styles.event).style.left.replace(/[^\d-]/g, ""));
+            
+            
+            
+        }, 1500);
     };
 
     useEffect(() => {
@@ -341,11 +350,11 @@ function Event(props) {
     return (
         <div data-event-id={props.id} className={styles.eventContainer + " " + styles.active}>
             <div className={styles.event} style={{ left: `${positionOnTimeline.current}%` }}></div>
-            <div  onClick={() => { props.onClickLabel(props.id, props.label, positionOnTimeline.current) }} onMouseEnter={() => props.onMouseHoverLabel(props.id, props.label, positionOnTimeline.current)} data-marker={props.label} data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${positionOnTimeline.current}%` }}>
+            <div onClick={() => { props.onClickLabel(props.id, props.label, positionOnTimeline.current) }} onMouseEnter={() => props.onMouseHoverLabel(props.id, props.label, positionOnTimeline.current)} data-marker={props.label} data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${positionOnTimeline.current}%` }}>
                 {
                     props.imgUrl &&
                     <div className={styles.labelImgContainer}>
-                        <img onLoad={() => props.recalculateStuff()} src={"/tinyImg/1.png"} />
+                        <img onLoad={() => props.recalculateStuff()} src={`/tinyImg/${props.imgUrl}.png`} />
                     </div>
                 }
                 <div>{(props.label.toString().length > 4 ? numberWithSpaces(props.label) : props.label)}</div>
