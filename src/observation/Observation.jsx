@@ -33,6 +33,7 @@ export default function Observation() {
 
     const onClickGoToSkullDisplay = () => {
         carouselTrackRef.current.style.transform = "";
+        setToggleTimeline(false);
         document.getElementById("expert_mode_button").classList.remove("hidden");
     }
 
