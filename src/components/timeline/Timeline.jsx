@@ -50,6 +50,8 @@ export default function Timeline() {
             }
         });
 
+        showSlideFromId(id);
+
         previousLabelIdClicked.current = id;
     }
 
@@ -59,7 +61,11 @@ export default function Timeline() {
             return;
         setCursorPositon(positionTimeline)
 
+        showSlideFromId(id);
 
+    }
+
+    const showSlideFromId = (id) => {
         const slide = slideshowTimelineRef.current.querySelector(`[data-slide-event-id="${id}"]`);
         if (!slide)
             return;
@@ -70,8 +76,6 @@ export default function Timeline() {
             return;
 
         slideshowTimelineRef.current.style.transform = `translate3d(-${indexSlide * 100}%, 0px, 0px)`;
-
-
     }
 
     const setCursorPositon = (position) => {
@@ -97,6 +101,7 @@ export default function Timeline() {
             } else {
                 marker.style.bottom = `100%`;
             }
+            //the red vertical bar
             marker.nextElementSibling.style.height = "";
         });
 
@@ -155,8 +160,8 @@ export default function Timeline() {
 
                 if (offsetY !== 0) {
 
-                    //should be the marker
                     const absOffset = Math.abs(offsetY);
+                    //the red vertical bar
                     element.nextElementSibling.style.height = `${absOffset}px`;
 
                     if (isBottom) {
@@ -244,17 +249,21 @@ export default function Timeline() {
                 })
             );
         } else {
-            setEvents(prevEvents => [...prevEvents, {id: generateUniqueId(), year: year, description: description, imgUrl: imgUrl, isBottom: false}]);
+            setEvents(prevEvents => [...prevEvents, { id: generateUniqueId(), year: year, description: description, imgUrl: imgUrl, isBottom: false }]);
         }
     };
 
     useEffect(() => {
-        if (events_.length == 0)
-            return;
+        if (events_.length == 0) return;
 
-        recalculateStuff();
+        const isSorted = events_.every((e, i, arr) => i == 0 || arr[i - 1].year <= e.year);
+        if (!isSorted) {
+            const sortedEvents = [...events_].sort((a, b) => a.year - b.year);
+            setEvents(sortedEvents);
+        } else {
+            recalculateStuff();
+        }
     }, [events_]);
-
 
     return (
         <>
@@ -283,11 +292,11 @@ export default function Timeline() {
                                 return (
                                     <div key={index} data-index={index} data-slide-event-id={event.id} className={styles.slideShowSlide}>
                                         {
-                                            event.imgUrl == null 
-                                            ? <div className={styles.year}>{event.year.toString().length > 4 ? numberWithSpaces(event.year) : event.year}</div>
-                                            : <div style={{backgroundImage: `url("/tinyImg/1.png")`}} className={styles.year}><span className={styles.blur}>{event.year.toString().length > 4 ? numberWithSpaces(event.year) : event.year}</span></div>
+                                            event.imgUrl == null
+                                                ? <div className={styles.year}>{event.year.toString().length > 4 ? numberWithSpaces(event.year) : event.year}</div>
+                                                : <div style={{ backgroundImage: `url("/tinyImg/1.png")` }} className={styles.year}><span className={styles.blur}>{event.year.toString().length > 4 ? numberWithSpaces(event.year) : event.year}</span></div>
                                         }
-                                        
+
                                         <div className={styles.description}>{event.description}</div>
                                     </div>
                                 );
@@ -303,7 +312,7 @@ export default function Timeline() {
 }
 
 /**
- * @param { {label:string, id:string, isBottom:boolean, cursor:HTMLElement, onClickLabel : (id:string, year:number|string, positionTimeline:number) => void, onMouseHoverLabel : (id:string, year:number|string, positionTimeline:number) => void}} props 
+ * @param { {label:string, id:string, isBottom:boolean, imgUrl:string|null, cursor:HTMLElement, onClickLabel : (id:string, year:number|string, positionTimeline:number) => void, onMouseHoverLabel : (id:string, year:number|string, positionTimeline:number) => void}} props 
  * @returns 
  */
 function Event(props) {
@@ -343,7 +352,13 @@ function Event(props) {
         <div data-event-id={props.id} className={styles.eventContainer + " " + styles.active}>
             <div className={styles.event} style={{ left: `${positionOnTimeline.current}%` }}></div>
             <div ref={ref} onClick={() => { props.onClickLabel(props.id, props.label, positionOnTimeline.current) }} onMouseEnter={() => props.onMouseHoverLabel(props.id, props.label, positionOnTimeline.current)} data-marker="" data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${positionOnTimeline.current}%` }}>
-                {(props.label.toString().length > 4 ? numberWithSpaces(props.label) : props.label)}
+                {
+                    props.imgUrl &&
+                    <div className={styles.labelImgContainer}>
+                        <img src={"/tinyImg/1.png"} />
+                    </div>
+                }
+                <div>{(props.label.toString().length > 4 ? numberWithSpaces(props.label) : props.label)}</div>
             </div>
             <div className={styles.marker} style={{ left: `${positionOnTimeline.current}%` }} id="marker"></div>
         </div>
