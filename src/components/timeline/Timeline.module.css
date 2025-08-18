@@ -160,9 +160,9 @@
 
 .year {
     align-self: stretch;
-    display: flex;
-    align-items: center;
     flex-shrink: 0;
+    width: 200px;
+    position: relative;
     font-size: 24px;
     font-weight: bold;
     padding-left: 40px;
@@ -181,6 +181,9 @@
 }
 
 .blur {
+    position: absolute;
+    bottom: 0;
+    left: 0;
     background-color: rgba(255, 255, 255, 0.4);
     -webkit-backdrop-filter: blur(1px);
     backdrop-filter: blur(1px);
