@@ -4,13 +4,19 @@ import { useAppSettings } from "../AppSettingsContext";
 import Subtitle from "../components/subtitle/Subtitle";
 import styles from "./Observation.module.css";
 import PanelSubtitle from "../components/panelSubtitle/PanelSubtitle";
+import Timeline from "../components/timeline/Timeline";
 
 export default function Observation() {
     /**
      * @type {React.RefObject<HTMLDivElement>}
      */
     const carouselTrackRef = useRef(null);
+    /**
+     * @type {React.RefObject<(year:string, description:string, imgUrl:string) => void>}
+     */
+    const setNewEventRef = useRef(null);
     const [primate, setPrimate] = useState(null);
+    const [toggleTimeline, setToggleTimeline] = useState(false);
 
     useEffect(() => {
         if (!primate) {
@@ -18,11 +24,23 @@ export default function Observation() {
         }
         carouselTrackRef.current.style.transform = "translateX(-100%)";
         document.getElementById("expert_mode_button").classList.add("hidden");
+        setToggleTimeline(false);
     }, [primate]);
 
     const onClickGoToSkullDisplay = () => {
         carouselTrackRef.current.style.transform = "";
         document.getElementById("expert_mode_button").classList.remove("hidden");
+    }
+
+    const onChangeForm = () => {
+        const correctAnswers = carouselTrackRef.current.querySelectorAll(`select.${styles.correct}`);
+        const nbrQuestions = 1;
+        if(correctAnswers.length == nbrQuestions) {
+            console.log(primate);
+            
+            setNewEventRef.current(primate.year, primate.fullName, primate.skullImgURL)
+            setToggleTimeline(true);
+        }        
     }
 
     return (
@@ -42,7 +60,12 @@ export default function Observation() {
                         </div>
 
                         <div className={styles.carouselSlide}>
-                            <Skull3DDislpay primate={primate} onClickGoToSkullDisplay={onClickGoToSkullDisplay}></Skull3DDislpay>
+                            <div>
+                                <Skull3DDislpay primate={primate} onChangeForm={onChangeForm} onClickGoToSkullDisplay={onClickGoToSkullDisplay}></Skull3DDislpay>
+                            </div>
+                            <div hidden={!toggleTimeline}>
+                                <Timeline setNewEvent={setNewEventRef}></Timeline>
+                            </div>
                         </div>
 
                     </div>
@@ -88,7 +111,7 @@ function SkullSelectionDisplay({ setPrimate }) {
     )
 }
 
-function Skull3DDislpay({ primate, onClickGoToSkullDisplay }) {
+function Skull3DDislpay({ primate, onClickGoToSkullDisplay, onChangeForm }) {
     if (!primate) {
         return (
             <></>
@@ -109,16 +132,16 @@ function Skull3DDislpay({ primate, onClickGoToSkullDisplay }) {
             </div>
             <div style={{ display: "flex", gap: "10px" }}>
                 <div className={styles.sketchfabContainer}>
-                    <iframe src={`${primate.skullScanURL}?ui_controls=0&ui_infos=0&ui_stop=0&ui_watermark=0 &ui_inspector=0&ui_help=0&ui_settings=0&ui_fullscreen=0`} frameborder="0"></iframe>
+                    <iframe src={`${primate.skullScanURL}?ui_controls=0&ui_infos=0&ui_stop=0&ui_watermark=0 &ui_inspector=0&ui_help=0&ui_settings=0&ui_fullscreen=0`} frameBorder="0"></iframe>
                 </div>
-                <CriteriaForm primate={primate} key={primate.fullName}></CriteriaForm>
+                <CriteriaForm primate={primate} key={primate.fullName} onChangeForm={onChangeForm}></CriteriaForm>
             </div>
 
         </div>
     )
 }
 
-function CriteriaForm({ primate }) {
+function CriteriaForm({ primate, onChangeForm }) {
     /**
      * @param {HTMLInputElement} select 
      */
@@ -154,10 +177,12 @@ function CriteriaForm({ primate }) {
 
             incorrectIcon.classList.remove(styles.hidden);
             correctIcon.classList.add(styles.hidden);
-
         }
 
+        onChangeForm();
     }
+
+
     return (
         <div className={`${styles.criteriaTableContainer}`}>
             <table className={styles.table}>

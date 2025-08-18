@@ -11,7 +11,12 @@ const events = [
     { year: maxyear },
 ];
 
-export default function Timeline() {
+/**
+ * 
+ * @param {{setNewEvent: React.RefObject<(year:string, description:string, imgUrl:string) => void>}} props 
+ * @returns 
+ */
+export default function Timeline(props) {
 
     /**
      * @type {ReturnType<typeof useState<{imgUrl:string|null, year:number, description:string, isBottom:boolean, id:string}[]>>}
@@ -90,6 +95,8 @@ export default function Timeline() {
             throw new Error("No timeline ref");
         }
 
+        const timelineRect = timelineRef.current.getBoundingClientRect();
+
         //Reset everything before calculating its height/new position and override what's on the CSS.
         /**@type {HTMLElement[]} */
         const markers = Array.from(timelineRef.current.querySelectorAll("[data-marker]"));
@@ -103,6 +110,17 @@ export default function Timeline() {
             }
             //the red vertical bar
             marker.nextElementSibling.style.height = "";
+
+            //prevent overflowing on the side by recalculating its position
+            const labelRect = marker.getBoundingClientRect();
+            if (labelRect.left < timelineRect.left) {
+                marker.style.left = '-2px'; //width of the red line marker
+                marker.style.transform = 'translateX(0)';
+            } else if (labelRect.right > timelineRect.right) {
+                marker.style.left = 'auto';
+                marker.style.right = '-2px'; //width of the red line marker
+                marker.style.transform = 'translateX(0)';
+            }
         });
 
         //wait for the dom to update
@@ -133,9 +151,11 @@ export default function Timeline() {
                 for (let j = i + 1; j < markersList.length; j++) {
                     const nextMarker = markersList[j];
                     if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
+                        console.log(currentMarker);
+                        
                         const offset = nextMarker.rect.top !== originalPosition ? 5 : 15;
                         const direction = moveDown ? 1 : -1;
-                        nextMarker.rect.y += direction * (currentMarker.rect.height + offset);
+                        nextMarker.rect.y += direction * (nextMarker.rect.height + offset);
                     }
                 }
             }
@@ -225,6 +245,7 @@ export default function Timeline() {
         });
 
         setEvents(mappedEvents);
+        props.setNewEvent.current = setNewEvent;
 
         window.addEventListener("resize", recalculateStuff);
         return () => {
@@ -233,24 +254,23 @@ export default function Timeline() {
     }, []);
 
     const setNewEvent = (year, description, imgUrl) => {
-        if (events_.find(e => e.imgUrl != null)) {
-            setEvents(prevEvents =>
-                prevEvents.map(event => {
-                    if (event.imgUrl != null) {
-                        return {
-                            ...event,
-                            description: description,
-                            year: year,
-                            imgUrl: imgUrl
-                        };
-                    } else {
-                        return event;
-                    }
-                })
-            );
-        } else {
-            setEvents(prevEvents => [...prevEvents, { id: generateUniqueId(), year: year, description: description, imgUrl: imgUrl, isBottom: false }]);
+        //replace every non digit or negative sign with a blank
+        year = year.toString().replace(/[^\d-]/g, "");
+        year = parseInt(year);
+        if (isNaN(year)) {
+            year = new Date().getFullYear();
         }
+
+
+
+
+        setEvents(prevEvents => {
+            const tempEvents = prevEvents.filter((event) => event.imgUrl == null);
+            tempEvents.push({ id: generateUniqueId(), description: description, imgUrl: imgUrl, isBottom: false, year: year });
+            return tempEvents;
+        }
+
+        );
     };
 
     useEffect(() => {
@@ -273,7 +293,7 @@ export default function Timeline() {
                         {
                             events_.map((event) => {
                                 return (
-                                    <Event onMouseHoverLabel={onMouseHoverLabel} onClickLabel={onClickLabel} cursor={cursorRef.current} key={event.id} label={event.year} id={event.id} isBottom={event.isBottom}></Event>
+                                    <Event recalculateStuff={recalculateStuff} onMouseHoverLabel={onMouseHoverLabel} onClickLabel={onClickLabel} cursor={cursorRef.current} key={event.id} label={event.year} id={event.id} isBottom={event.isBottom} imgUrl={event.imgUrl}></Event>
                                 );
                             })
                         }
@@ -294,7 +314,7 @@ export default function Timeline() {
                                         {
                                             event.imgUrl == null
                                                 ? <div className={styles.year}>{event.year.toString().length > 4 ? numberWithSpaces(event.year) : event.year}</div>
-                                                : <div style={{ backgroundImage: `url("/tinyImg/1.png")` }} className={styles.year}><span className={styles.blur}>{event.year.toString().length > 4 ? numberWithSpaces(event.year) : event.year}</span></div>
+                                                : <div style={{ backgroundImage: `url("/tinyImg/${event.imgUrl}.png")` }} className={styles.year}><span className={styles.blur}>{event.year.toString().length > 4 ? numberWithSpaces(event.year) : event.year}</span></div>
                                         }
 
                                         <div className={styles.description}>{event.description}</div>
@@ -312,50 +332,20 @@ export default function Timeline() {
 }
 
 /**
- * @param { {label:string, id:string, isBottom:boolean, imgUrl:string|null, cursor:HTMLElement, onClickLabel : (id:string, year:number|string, positionTimeline:number) => void, onMouseHoverLabel : (id:string, year:number|string, positionTimeline:number) => void}} props 
+ * @param { {recalculateStuff:any, label:string, id:string, isBottom:boolean, imgUrl:string|null, cursor:HTMLElement, onClickLabel : (id:string, year:number|string, positionTimeline:number) => void, onMouseHoverLabel : (id:string, year:number|string, positionTimeline:number) => void}} props 
  * @returns 
  */
 function Event(props) {
-    /** @type {React.RefObject<HTMLDivElement>} */
-    const ref = useRef(null);
-
-
     const positionOnTimeline = useRef(calculatePositionOnTimeline(minYear, maxyear, props.label));
-
-    useEffect(() => {
-        const labelElement = ref.current;
-
-        /**@type {HTMLElement} */
-        const timelineElement = labelElement.closest("#timeline");
-
-        if (!timelineElement)
-            throw new Error("The label doesn't have a timeline.")
-
-        const labelRect = labelElement.getBoundingClientRect();
-        const timelineRect = timelineElement.getBoundingClientRect();
-
-
-        if (labelRect.left < timelineRect.left) {
-            labelElement.style.left = '-2px'; //width of the red line marker
-            labelElement.style.transform = 'translateX(0)';
-        } else if (labelRect.right > timelineRect.right) {
-            labelElement.style.left = 'auto';
-            labelElement.style.right = '-2px'; //width of the red line marker
-            labelElement.style.transform = 'translateX(0)';
-        }
-
-
-    }, []);
-
 
     return (
         <div data-event-id={props.id} className={styles.eventContainer + " " + styles.active}>
             <div className={styles.event} style={{ left: `${positionOnTimeline.current}%` }}></div>
-            <div ref={ref} onClick={() => { props.onClickLabel(props.id, props.label, positionOnTimeline.current) }} onMouseEnter={() => props.onMouseHoverLabel(props.id, props.label, positionOnTimeline.current)} data-marker="" data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${positionOnTimeline.current}%` }}>
+            <div  onClick={() => { props.onClickLabel(props.id, props.label, positionOnTimeline.current) }} onMouseEnter={() => props.onMouseHoverLabel(props.id, props.label, positionOnTimeline.current)} data-marker={props.label} data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${positionOnTimeline.current}%` }}>
                 {
                     props.imgUrl &&
                     <div className={styles.labelImgContainer}>
-                        <img src={"/tinyImg/1.png"} />
+                        <img onLoad={() => props.recalculateStuff()} src={"/tinyImg/1.png"} />
                     </div>
                 }
                 <div>{(props.label.toString().length > 4 ? numberWithSpaces(props.label) : props.label)}</div>
