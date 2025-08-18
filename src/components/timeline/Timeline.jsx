@@ -84,6 +84,8 @@ export default function Timeline(props) {
     }
 
     const setCursorPositon = (position) => {
+        console.log(position);
+
         cursorRef.current.style.left = `${position}%`;
     }
 
@@ -272,14 +274,17 @@ export default function Timeline(props) {
         setTimeout(() => {
             //event element on timeline
             const eventElement = timelineRef.current.querySelector(`[data-event-id="${id}"]`);
-
             const slideEvent = slideshowTimelineRef.current.querySelector(`[data-slide-event-id="${id}"]`);
 
-            setCursorPositon(eventElement.querySelector("." + styles.event).style.left.replace(/[^\d-]/g, ""));
-            
-            
-            
-        }, 1500);
+            cursorRef.current.style.left = eventElement.querySelector("." + styles.event).style.left;
+            const indexSlide = parseInt(slideEvent.getAttribute("data-index"));
+
+            if (isNaN(indexSlide))
+                return;
+
+            slideshowTimelineRef.current.style.transform = `translate3d(-${indexSlide * 100}%, 0px, 0px)`;
+
+        }, 500);
     };
 
     useEffect(() => {
