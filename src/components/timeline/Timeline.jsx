@@ -14,12 +14,15 @@ const events = [
 export default function Timeline() {
 
     /**
-     * @type {ReturnType<typeof useState<{year:number, description:string, isBottom:boolean, id:string}[]>>}
+     * @type {ReturnType<typeof useState<{imgUrl:string|null, year:number, description:string, isBottom:boolean, id:string}[]>>}
      */
     const [events_, setEvents] = useState([]);
 
     /**@type {React.RefObject<HTMLDivElement>} */
     const timelineRef = useRef(null);
+
+    /**@type {React.RefObject<HTMLDivElement>} */
+    const slideshowTimelineRef = useRef(null);
 
     /**@type {React.RefObject<HTMLDivElement>} */
     const cursorRef = useRef(null);
@@ -55,6 +58,20 @@ export default function Timeline() {
         if (previousLabelIdClicked.current != "")
             return;
         setCursorPositon(positionTimeline)
+
+
+        const slide = slideshowTimelineRef.current.querySelector(`[data-slide-event-id="${id}"]`);
+        if (!slide)
+            return;
+
+        const indexSlide = parseInt(slide.getAttribute("data-index"));
+
+        if (isNaN(indexSlide))
+            return;
+
+        slideshowTimelineRef.current.style.transform = `translate3d(-${indexSlide * 100}%, 0px, 0px)`;
+
+
     }
 
     const setCursorPositon = (position) => {
@@ -196,8 +213,9 @@ export default function Timeline() {
             return {
                 id: generateUniqueId(),
                 year: e.year,
-                description: "",
-                isBottom: index % 2 == 0
+                description: "lorem ipsum test",
+                isBottom: index % 2 == 0,
+                imgUrl: null,
             }
         });
 
@@ -208,6 +226,27 @@ export default function Timeline() {
             window.removeEventListener("resize", recalculateStuff);
         }
     }, []);
+
+    const setNewEvent = (year, description, imgUrl) => {
+        if (events_.find(e => e.imgUrl != null)) {
+            setEvents(prevEvents =>
+                prevEvents.map(event => {
+                    if (event.imgUrl != null) {
+                        return {
+                            ...event,
+                            description: description,
+                            year: year,
+                            imgUrl: imgUrl
+                        };
+                    } else {
+                        return event;
+                    }
+                })
+            );
+        } else {
+            setEvents(prevEvents => [...prevEvents, {id: generateUniqueId(), year: year, description: description, imgUrl: imgUrl, isBottom: false}]);
+        }
+    };
 
     useEffect(() => {
         if (events_.length == 0)
@@ -234,15 +273,28 @@ export default function Timeline() {
                     </div>
                 </div>
             </div>
+
             <div className={styles.slideshowContainer}>
                 <div className={styles.slideshowWrapper}>
-                    <div className={styles.slideshowTrack}>
-                        <div className={styles.slideShowSlide}>
-                            <div className={styles.year}>1</div>
-                        </div>
-                        <div className={styles.slideShowSlide}>
-                            <div className={styles.year}>2</div>
-                        </div>
+                    <div ref={slideshowTimelineRef} className={styles.slideshowTrack}>
+
+                        {
+                            events_.map((event, index) => {
+                                return (
+                                    <div key={index} data-index={index} data-slide-event-id={event.id} className={styles.slideShowSlide}>
+                                        {
+                                            event.imgUrl == null 
+                                            ? <div className={styles.year}>{event.year.toString().length > 4 ? numberWithSpaces(event.year) : event.year}</div>
+                                            : <div style={{backgroundImage: `url("/tinyImg/1.png")`}} className={styles.year}><span className={styles.blur}>{event.year.toString().length > 4 ? numberWithSpaces(event.year) : event.year}</span></div>
+                                        }
+                                        
+                                        <div className={styles.description}>{event.description}</div>
+                                    </div>
+                                );
+                            })
+                        }
+
+
                     </div>
                 </div>
             </div>
