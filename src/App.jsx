@@ -58,8 +58,8 @@ function App() {
 
   return (
     <main>
-      <Timeline></Timeline>
-      {/* {tab === TABS.home && <Home setTabs={setTab} />}
+      {/* <Timeline></Timeline> */}
+      {tab === TABS.home && <Home setTabs={setTab} />}
 
       {
         [TABS.learning, TABS.observation].includes(tab) &&
@@ -72,7 +72,7 @@ function App() {
       }
 
       {tab === TABS.learning && <Learning></Learning>}
-      {tab === TABS.observation && <Observation></Observation>} */}
+      {tab === TABS.observation && <Observation></Observation>}
     </main>
   );
 }
