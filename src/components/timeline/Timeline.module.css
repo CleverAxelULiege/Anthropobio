@@ -161,14 +161,14 @@
 .year {
     display: flex;
     align-items: center;
+    justify-content: center;
     align-self: stretch;
     flex-shrink: 0;
     width: 200px;
     position: relative;
     font-size: 24px;
     font-weight: bold;
-    padding-left: 40px;
-    padding-right: 40px;
+
     border-right: 1px solid #b4b4b4;
     color: rgb(39, 39, 39);
     background-position: center;
