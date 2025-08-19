@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./Timeline.module.css"
+import { TIMELINE_END, TIMELINE_EVENTS, TIMELINE_EXPERT_MODE, TIMELINE_LIGHT_MODE } from "../../App";
 const minYear = -8_000_000;
 const maxyear = new Date().getFullYear();
 
@@ -148,15 +149,19 @@ export default function Timeline(props) {
 
         // Helper function to resolve overlaps
         const resolveOverlaps = (markersList, originalPosition, moveDown = false) => {
-            for (let i = 0; i < markersList.length; i++) {
-                const currentMarker = markersList[i];
-                for (let j = i + 1; j < markersList.length; j++) {
-                    const nextMarker = markersList[j];
-                    if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
-
-                        const offset = nextMarker.rect.top !== originalPosition ? 15 : 15;
-                        const direction = moveDown ? 1 : -1;
-                        nextMarker.rect.y += direction * (Math.max(nextMarker.rect.height, currentMarker.rect.height) + offset);
+            let foundOverlap = true;
+            while (foundOverlap) {
+                foundOverlap = false;
+                for (let i = 0; i < markersList.length; i++) {
+                    const currentMarker = markersList[i];
+                    for (let j = i + 1; j < markersList.length; j++) {
+                        const nextMarker = markersList[j];
+                        if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
+                            foundOverlap = true;
+                            const offset = nextMarker.rect.top !== originalPosition ? 15 : 15;
+                            const direction = moveDown ? 1 : -1;
+                            nextMarker.rect.y += direction * (Math.max(nextMarker.rect.height, currentMarker.rect.height) + offset);
+                        }
                     }
                 }
             }
@@ -235,11 +240,11 @@ export default function Timeline(props) {
 
     useEffect(() => {
         /** @type {{year:number, description:string, isBottom:boolean, id:string}[]} */
-        let mappedEvents = events.map((e, index) => {
+        let mappedEvents = TIMELINE_EVENTS.map((e, index) => {
             return {
                 id: generateUniqueId(),
                 year: e.year,
-                description: "lorem ipsum test",
+                description: e.description,
                 isBottom: index % 2 == 0,
                 imgUrl: null,
             }
@@ -350,7 +355,7 @@ export default function Timeline(props) {
  * @returns 
  */
 function Event(props) {
-    const positionOnTimeline = useRef(calculatePositionOnTimeline(minYear, maxyear, props.label));
+    const positionOnTimeline = useRef(calculatePositionOnTimeline(TIMELINE_EXPERT_MODE.year, TIMELINE_END.year, props.label));
 
     return (
         <div data-event-id={props.id} className={styles.eventContainer + " " + styles.active}>
