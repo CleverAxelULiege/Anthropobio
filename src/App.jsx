@@ -24,6 +24,19 @@ export const VIDEOS = [...BASE_VIDEOS, ...CRITERION_VIDEOS];
 /** @type {CriterionWithAnswers[]} */
 export const CRITERIA_WITH_ANSWERS = data.criteria_with_answers;
 
+/** @type {TimelineEvent[]} */
+export const TIMELINE_EVENTS = data.timeline.events;
+
+/** @type {TimelineEvent} */
+export const TIMELINE_EXPERT_MODE = data.timeline.expertStart;
+
+/** @type {TimelineEvent} */
+export const TIMELINE_LIGHT_MODE = data.timeline.lightStart;
+
+/** @type {TimelineEvent} */
+export const TIMELINE_END = data.timeline.end;
+
+
 export const TABS = {
   home: "home",
   learning: "learning",

@@ -30,3 +30,9 @@
  * @property {string} name
  * @property {string} url
  */
+
+/**
+ * @typedef {Object} TimelineEvent
+ * @property {number} year
+ * @property {string} description
+ */
