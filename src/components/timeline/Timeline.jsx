@@ -85,13 +85,8 @@ export default function Timeline(props) {
     }
 
     const setCursorPositon = (position) => {
-        console.log(position);
-
         cursorRef.current.style.left = `${position}%`;
     }
-
-
-
 
     const recalculateStuff = () => {
         if (!timelineRef.current) {
@@ -113,6 +108,9 @@ export default function Timeline(props) {
             }
             //the red vertical bar
             marker.nextElementSibling.style.height = "";
+                            marker.style.left = marker.previousElementSibling.style.left;
+                marker.style.right = '';
+                marker.style.transform = '';
 
             //prevent overflowing on the side by recalculating its position
             const labelRect = marker.getBoundingClientRect();
