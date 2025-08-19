@@ -77,7 +77,7 @@ function App() {
       {
         [TABS.learning, TABS.observation].includes(tab) &&
         <>
-          <Nav setTab={setTab}></Nav>
+          <Nav key={tab} setTab={setTab} tab={tab}></Nav>
           <div className="center">
             <Title>Identification de crânes de singes <br></br> et d'hommes fossiles</Title>
           </div>
