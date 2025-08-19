@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./Timeline.module.css"
 import { TIMELINE_END, TIMELINE_EVENTS, TIMELINE_EXPERT_MODE, TIMELINE_LIGHT_MODE } from "../../App";
+import { useAppSettings } from "../../AppSettingsContext";
 const minYear = -8_000_000;
 const maxyear = new Date().getFullYear();
 
@@ -18,6 +19,7 @@ const events = [
  * @returns 
  */
 export default function Timeline(props) {
+    const { expertMode, setExpertMode, primateId, setPrimateId } = useAppSettings();
 
     /**
      * @type {ReturnType<typeof useState<{imgUrl:string|null, year:number, description:string, isBottom:boolean, id:string}[]>>}
@@ -108,9 +110,9 @@ export default function Timeline(props) {
             }
             //the red vertical bar
             marker.nextElementSibling.style.height = "";
-                            marker.style.left = marker.previousElementSibling.style.left;
-                marker.style.right = '';
-                marker.style.transform = '';
+            marker.style.left = marker.previousElementSibling.style.left;
+            marker.style.right = '';
+            marker.style.transform = '';
 
             //prevent overflowing on the side by recalculating its position
             const labelRect = marker.getBoundingClientRect();
@@ -205,19 +207,19 @@ export default function Timeline(props) {
             let y = markerImg.rect.bottom;
             let test = null;
             markersTop.forEach((m) => {
-                
+
                 if (isXOverlapping(m.rect, markerImg.rect)) {
-                    if(m.rect.y < y) {                        
+                    if (m.rect.y < y) {
                         y = m.rect.y;
                         test = m;
                     }
-                    
-                    
+
+
                 }
             });
 
             markerImg.rect.y = y;
-            markerImg.rect.y -= markerImg.rect.height + (15 / 2);
+            markerImg.rect.y -= markerImg.rect.height + (15);
             markersTop.push(markerImg);
 
         }
@@ -280,7 +282,16 @@ export default function Timeline(props) {
             }
         });
 
+        const year = expertMode ? TIMELINE_EXPERT_MODE.year : TIMELINE_LIGHT_MODE.year;
+        mappedEvents = mappedEvents.filter((e) => e.year >= year);
+        mappedEvents.push({description: TIMELINE_END.description, year: TIMELINE_END.year, id: generateUniqueId(), isBottom: false});
+
         setEvents(mappedEvents);
+
+    }, [expertMode]);
+
+    useEffect(() => {
+
         props.setNewEvent.current = setNewEvent;
 
         window.addEventListener("resize", recalculateStuff);
@@ -385,7 +396,8 @@ export default function Timeline(props) {
  * @returns 
  */
 function Event(props) {
-    const positionOnTimeline = useRef(calculatePositionOnTimeline(TIMELINE_EXPERT_MODE.year, TIMELINE_END.year, props.label));
+    const { expertMode, setExpertMode, primateId, setPrimateId } = useAppSettings();
+    const positionOnTimeline = useRef(calculatePositionOnTimeline(expertMode ? TIMELINE_EXPERT_MODE.year : TIMELINE_LIGHT_MODE.year, TIMELINE_END.year, props.label));
 
     return (
         <div data-event-id={props.id} className={styles.eventContainer + " " + styles.active}>
