@@ -136,18 +136,20 @@ export default function Timeline(props) {
                 element: element,
                 rect: rect,
                 originalTop: rect.top,
-                isBottom: element.getAttribute("data-is-bottom") == "true"
+                isBottom: element.getAttribute("data-is-bottom") == "true",
+                hasImg: element.getAttribute("data-has-img") == "true",
             };
         });
 
         // Separate and sort markers
-        const markersBottom = markersWithRect.filter((m) => m.isBottom).sort((a, b) => a.rect.left - b.rect.left);
-        const markersTop = markersWithRect.filter((m) => !m.isBottom).sort((a, b) => a.rect.left - b.rect.left);
+        const markersBottom = markersWithRect.filter((m) => m.isBottom);
+        const markersTop = markersWithRect.filter((m) => !m.isBottom && !m.hasImg);
+        const markerImg = markersWithRect.find((m) => m.hasImg);
 
         const originalTop = markersTop[0].originalTop;
         const originalBottom = markersBottom[0].originalTop;
 
-        // Helper function to resolve overlaps
+        // Helper function to resolve overlaps - Jesus heckin christ
         const resolveOverlaps = (markersList, originalPosition, moveDown = false) => {
             let foundOverlap = true;
             while (foundOverlap) {
@@ -158,7 +160,7 @@ export default function Timeline(props) {
                         const nextMarker = markersList[j];
                         if (isOverlapping(currentMarker.rect, nextMarker.rect)) {
                             foundOverlap = true;
-                            const offset = nextMarker.rect.top !== originalPosition ? 15 : 15;
+                            const offset = nextMarker.rect.top !== originalPosition ? 15 / 2 : 15;
                             const direction = moveDown ? 1 : -1;
                             nextMarker.rect.y += direction * (Math.max(nextMarker.rect.height, currentMarker.rect.height) + offset);
                         }
@@ -199,9 +201,39 @@ export default function Timeline(props) {
             });
         };
 
+        const resolveMarkerWithImg = () => {
+            if (!markerImg)
+                return;
+            let y = markerImg.rect.bottom;
+            let test = null;
+            markersTop.forEach((m) => {
+                
+                if (isXOverlapping(m.rect, markerImg.rect)) {
+                    if(m.rect.y < y) {                        
+                        y = m.rect.y;
+                        test = m;
+                    }
+                    
+                    
+                }
+            });
+
+            markerImg.rect.y = y;
+            markerImg.rect.y -= markerImg.rect.height + (15 / 2);
+            markersTop.push(markerImg);
+
+        }
+
+        resolveMarkerWithImg();
+
         // Apply positioning to both marker types
         applyPositioning(markersTop, false);
         applyPositioning(markersBottom, true);
+
+
+
+
+
 
         const calculateRequiredHeight = () => {
             let maxTopExtent = 0;
@@ -360,7 +392,7 @@ function Event(props) {
     return (
         <div data-event-id={props.id} className={styles.eventContainer + " " + styles.active}>
             <div className={styles.event} style={{ left: `${positionOnTimeline.current}%` }}></div>
-            <div onClick={() => { props.onClickLabel(props.id, props.label, positionOnTimeline.current) }} onMouseEnter={() => props.onMouseHoverLabel(props.id, props.label, positionOnTimeline.current)} data-marker={props.label} data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${positionOnTimeline.current}%` }}>
+            <div onClick={() => { props.onClickLabel(props.id, props.label, positionOnTimeline.current) }} onMouseEnter={() => props.onMouseHoverLabel(props.id, props.label, positionOnTimeline.current)} data-marker={props.label} data-has-img={props.imgUrl != null} data-is-bottom={props.isBottom} className={styles.yearLabel} style={{ left: `${positionOnTimeline.current}%` }}>
                 {
                     props.imgUrl &&
                     <div className={styles.labelImgContainer}>
@@ -390,6 +422,10 @@ function isOverlapping(rect1, rect2) {
         rect1.left > rect2.right ||
         rect1.bottom < rect2.top ||
         rect1.top > rect2.bottom);
+}
+function isXOverlapping(rect1, rect2) {
+    return !(rect1.right < rect2.left ||
+        rect1.left > rect2.right);
 }
 
 function generateUniqueId() {
