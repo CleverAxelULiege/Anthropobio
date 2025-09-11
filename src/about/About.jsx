@@ -17,6 +17,10 @@ export default function About() {
             <div className={styles.logoContainer}>
                 <img src="/images/thumbnail_PMC_ULg.png" alt="" />
             </div>
+
+            <div className={styles.buttonContainer}>
+                <button className="button_link" onClick={() => history.back()}>Revenir à la page précédente</button>
+            </div>
         </div>
     )
 }

@@ -41,3 +41,9 @@
   border-radius: 10px;
   z-index: -1;
 }
+
+.about .buttonContainer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
