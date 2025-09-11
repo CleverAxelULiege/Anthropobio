@@ -6,7 +6,7 @@ import styles from "./Observation.module.css";
 import PanelSubtitle from "../components/panelSubtitle/PanelSubtitle";
 import Timeline from "../components/timeline/Timeline";
 
-export default function Observation({setTab}) {
+export default function Observation({ setTab }) {
     /**
      * @type {React.RefObject<HTMLDivElement>}
      */
@@ -39,7 +39,7 @@ export default function Observation({setTab}) {
 
     const onChangeForm = () => {
         const correctAnswers = carouselTrackRef.current.querySelectorAll(`select.${styles.correct}`);
-        const nbrQuestions = 1;
+        const nbrQuestions = 9;
         if (correctAnswers.length == nbrQuestions) {
 
             setNewEventRef.current(primate.year, primate.fullName, primate.skullImgURL)
@@ -59,7 +59,7 @@ export default function Observation({setTab}) {
         <>
             <div className="center">
                 <Subtitle>
-                    Cliquez sur l’un des crânes ci-dessous pour observer ses caractéristiques morphologiques, puis encodez les critères observés afin de l’identifier 
+                    Cliquez sur l’un des crânes ci-dessous pour observer ses caractéristiques morphologiques, puis encodez les critères observés afin de l’identifier
                 </Subtitle>
             </div>
 
@@ -100,7 +100,7 @@ function SkullSelectionDisplay({ setPrimate, setTab }) {
                 <div className={styles.skullImagesContainer}>
                     {PRIMATES.map((primate, index) => {
                         return (
-                            <button key={index} className={primateActive && primateActive.fullName == primate.fullName ? styles.active : ""} onClick={() => { setPrimate({...primate}); setPrimateActive({...primate}) }}>
+                            <button key={index} className={primateActive && primateActive.fullName == primate.fullName ? styles.active : ""} onClick={() => { setPrimate({ ...primate }); setPrimateActive({ ...primate }) }}>
                                 <img src={`/tinyImg/${primate.skullImgURL}.png`} />
                             </button>
                         )
@@ -112,7 +112,7 @@ function SkullSelectionDisplay({ setPrimate, setTab }) {
                 <div className={styles.skullImagesContainer}>
                     {PRIMATES_LIGHT.map((primate, index) => {
                         return (
-                            <button key={index} className={primateActive && primateActive.fullName == primate.fullName ? styles.active : ""} onClick={() => { setPrimate({...primate}); setPrimateActive({...primate}) }}>
+                            <button key={index} className={primateActive && primateActive.fullName == primate.fullName ? styles.active : ""} onClick={() => { setPrimate({ ...primate }); setPrimateActive({ ...primate }) }}>
                                 <img src={`/tinyImg/${primate.skullImgURL}.png`} />
                             </button>
                         )
@@ -121,9 +121,9 @@ function SkullSelectionDisplay({ setPrimate, setTab }) {
             }
 
             <div className={styles.buttonContainer}>
-                <a className={styles.goToLearningButton} onClick={(e) => {e.preventDefault(); setTab(TABS.learning)}} href={`?tab=${TABS.learning}`}>
+                <a className={styles.goToLearningButton} onClick={(e) => { e.preventDefault(); setTab(TABS.learning) }} href={`?tab=${TABS.learning}`}>
                     Retour aux vidéos
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M512 128C514 128 515.9 128.1 517.8 128.3L422.1 224L490 224L562 152C570.8 163 576 176.9 576 192L576 448C576 483.3 547.3 512 512 512L128 512C92.7 512 64 483.3 64 448L64 192C64 156.7 92.7 128 128 128L198.1 128L102.1 224L170 224L265 129L266 128L358.1 128L262.1 224L330 224L425 129L426 128L512.1 128z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M512 128C514 128 515.9 128.1 517.8 128.3L422.1 224L490 224L562 152C570.8 163 576 176.9 576 192L576 448C576 483.3 547.3 512 512 512L128 512C92.7 512 64 483.3 64 448L64 192C64 156.7 92.7 128 128 128L198.1 128L102.1 224L170 224L265 129L266 128L358.1 128L262.1 224L330 224L425 129L426 128L512.1 128z" /></svg>
                 </a>
             </div>
         </div>
@@ -186,16 +186,25 @@ function CriteriaForm({ primate, onChangeForm }) {
         label.style.transform = "translateX(30px)";
         if (answerSelected == correctAnswer) {
             select.classList.remove(styles.incorrect);
+            select.classList.remove(styles.animation);
+
             select.classList.add(styles.correct);
 
             incorrectIcon.classList.add(styles.hidden);
             correctIcon.classList.remove(styles.hidden);
         } else {
             select.classList.add(styles.incorrect);
+
             select.classList.remove(styles.correct);
 
             incorrectIcon.classList.remove(styles.hidden);
             correctIcon.classList.add(styles.hidden);
+
+            select.classList.remove(styles.animation);
+            setTimeout(() => {
+                select.classList.add(styles.animation);
+            }, 100);
+
         }
 
         onChangeForm();

@@ -77,7 +77,7 @@ function VideosSection({ onClickGotoCriteriaTable, setTab }) {
         <>
             <div className="relative">
                 <div className="center" style={{ maxWidth: "1920px" }}>
-                    <PanelSubtitle>Critères d'identification</PanelSubtitle>
+                    <PanelSubtitle>Vidéos</PanelSubtitle>
                 </div>
                 <button style={{display: expertMode ? "flex" : "none"}} onClick={() => onClickGotoCriteriaTable()} className={styles.goToCriteriaTableButton}>
                     Critères morphologiques
