@@ -6,6 +6,7 @@ import Nav from "./components/nav/Nav.jsx";
 import Observation from "./observation/Observation.jsx";
 import Title from "./components/title/Title.jsx";
 import Timeline from "./components/timeline/Timeline.jsx";
+import About from "./about/About.jsx";
 
 /** @type {Primate[]} */
 export const PRIMATES = data.primates;
@@ -40,7 +41,8 @@ export const TIMELINE_END = data.timeline.end;
 export const TABS = {
   home: "home",
   learning: "learning",
-  observation: "observation"
+  observation: "observation",
+  about : "about"
 };
 
 function App() {
@@ -86,6 +88,7 @@ function App() {
 
       {tab === TABS.learning && <Learning setTab={setTab}></Learning>}
       {tab === TABS.observation && <Observation setTab={setTab}></Observation>}
+      {tab == TABS.about && <About></About>}
     </main>
   );
 }

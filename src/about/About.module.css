@@ -1,0 +1,43 @@
+.about {
+    max-width: 800px;
+    margin: 30px auto;
+    color: white;
+}
+
+.about p {
+    margin: 10px 0;
+    font-size: 20px;
+}
+
+.about hr {
+    border: none;
+    border-bottom: 1px solid white;
+    margin: 20px 0;
+}
+
+.about h2 {
+    font-weight: 900;
+    font-size: 32px;
+}
+
+.about span {
+    color: orange;
+}
+
+.about .logoContainer {
+    position: relative;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.about .logoContainer::before {
+    content: "";
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 100%;
+  height: 100%;
+  background-color: #db8f02;
+  border-radius: 10px;
+  z-index: -1;
+}
