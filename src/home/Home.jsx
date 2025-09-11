@@ -13,7 +13,7 @@ export default function Home(props) {
                 <div>
                     <h1 className={styles.title}>
                         Mettez-vous dans la peau des étudiantes et étudiants du cours
-                        d’anthropologie biologique de l’Université de Liège.
+                        d’anthropologie biologique de l’Université de Liège
                         <br />
                         <br />
                         Apprenez à identifier les crânes d’hommes et de singes fossiles

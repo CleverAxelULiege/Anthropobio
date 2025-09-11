@@ -59,7 +59,7 @@ export default function Observation() {
         <>
             <div className="center">
                 <Subtitle>
-                    Cliquez sur l’un des crânes ci-dessous pour le manipuler en 3D, puis encodez les critères morphologiques que vous observez sur ce crâne afin de l’identifier.
+                    Cliquez sur l’un des crânes ci-dessous pour le manipuler en 3D, puis encodez les critères morphologiques que vous observez sur ce crâne afin de l’identifier
                 </Subtitle>
             </div>
 

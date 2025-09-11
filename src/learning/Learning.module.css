@@ -279,3 +279,42 @@
     flex-direction: column;
     min-width: 100%;
 }
+
+
+.buttonContainer {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.goToObservationButton {
+  text-decoration: none;
+  background-color: #DB8F02;
+  color: white;
+  border: none;
+  font-size: 24px;
+  padding: 8px 16px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  fill: white;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.goToObservationButton svg {
+  width: 30px;
+  transition: transform 1s ease;
+  transform-style: preserve-3d;
+}
+
+.goToObservationButton:hover svg {
+  transform: rotateY(360deg);
+}
+
+.goToObservationButton:hover {
+  background-color: #c47b00;
+}
