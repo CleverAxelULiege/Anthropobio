@@ -8,8 +8,8 @@ import styles from "./Subtitle.module.css";
  */
 export default function Subtitle({ children, className }) {
   return (
-    <p className={`${styles.subtitle} ${className}`}>
+    <div className={`${styles.subtitle} ${className}`}>
       {children}
-    </p>
+    </div>
   );
 }

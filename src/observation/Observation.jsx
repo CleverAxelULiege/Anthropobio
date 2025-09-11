@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { CRITERIA_WITH_ANSWERS, PRIMATES, PRIMATES_LIGHT } from "../App";
+import { CRITERIA_WITH_ANSWERS, PRIMATES, PRIMATES_LIGHT, TABS } from "../App";
 import { useAppSettings } from "../AppSettingsContext";
 import Subtitle from "../components/subtitle/Subtitle";
 import styles from "./Observation.module.css";
 import PanelSubtitle from "../components/panelSubtitle/PanelSubtitle";
 import Timeline from "../components/timeline/Timeline";
 
-export default function Observation() {
+export default function Observation({setTab}) {
     /**
      * @type {React.RefObject<HTMLDivElement>}
      */
@@ -40,17 +40,17 @@ export default function Observation() {
     const onChangeForm = () => {
         const correctAnswers = carouselTrackRef.current.querySelectorAll(`select.${styles.correct}`);
         const nbrQuestions = 1;
-        if(correctAnswers.length == nbrQuestions) {
-            
+        if (correctAnswers.length == nbrQuestions) {
+
             setNewEventRef.current(primate.year, primate.fullName, primate.skullImgURL)
             setToggleTimeline(true);
-        }        
+        }
     }
 
     useEffect(() => {
-        if(toggleTimeline){
+        if (toggleTimeline) {
             setTimeout(() => {
-                timelineRef.current.scrollIntoView({behavior: "smooth", block: "start"});
+                timelineRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
             }, 100);
         }
     }, [toggleTimeline])
@@ -59,7 +59,7 @@ export default function Observation() {
         <>
             <div className="center">
                 <Subtitle>
-                    Cliquez sur l’un des crânes ci-dessous pour le manipuler en 3D, puis encodez les critères morphologiques que vous observez sur ce crâne afin de l’identifier
+                    Cliquez sur l’un des crânes ci-dessous pour observer ses caractéristiques morphologiques, puis encodez les critères observés afin de l’identifier 
                 </Subtitle>
             </div>
 
@@ -68,14 +68,14 @@ export default function Observation() {
                     <div ref={carouselTrackRef} className={styles.carouselTrack}>
 
                         <div className={styles.carouselSlide}>
-                            <SkullSelectionDisplay setPrimate={setPrimate}></SkullSelectionDisplay>
+                            <SkullSelectionDisplay setTab={setTab} setPrimate={setPrimate}></SkullSelectionDisplay>
                         </div>
 
                         <div className={styles.carouselSlide}>
                             <div>
                                 <Skull3DDislpay primate={primate} onChangeForm={onChangeForm} onClickGoToSkullDisplay={onClickGoToSkullDisplay}></Skull3DDislpay>
                             </div>
-                            <div ref={timelineRef} hidden={!toggleTimeline} style={{paddingBottom: "10px"}}>
+                            <div ref={timelineRef} hidden={!toggleTimeline} style={{ paddingBottom: "10px" }}>
                                 <Timeline setNewEvent={setNewEventRef}></Timeline>
                             </div>
                         </div>
@@ -88,7 +88,7 @@ export default function Observation() {
     )
 }
 
-function SkullSelectionDisplay({ setPrimate }) {
+function SkullSelectionDisplay({ setPrimate, setTab }) {
     const { expertMode, setExpertMode, primateId, setPrimateId } = useAppSettings();
     const [primateActive, setPrimateActive] = useState(null);
 
@@ -100,7 +100,7 @@ function SkullSelectionDisplay({ setPrimate }) {
                 <div className={styles.skullImagesContainer}>
                     {PRIMATES.map((primate, index) => {
                         return (
-                            <button key={index} className={primateActive && primateActive.fullName == primate.fullName ? styles.active : ""} onClick={() => { setPrimate(primate); setPrimateActive(primate) }}>
+                            <button key={index} className={primateActive && primateActive.fullName == primate.fullName ? styles.active : ""} onClick={() => { setPrimate({...primate}); setPrimateActive({...primate}) }}>
                                 <img src={`/tinyImg/${primate.skullImgURL}.png`} />
                             </button>
                         )
@@ -112,13 +112,20 @@ function SkullSelectionDisplay({ setPrimate }) {
                 <div className={styles.skullImagesContainer}>
                     {PRIMATES_LIGHT.map((primate, index) => {
                         return (
-                            <button key={index} className={primateActive && primateActive.fullName == primate.fullName ? styles.active : ""} onClick={() => { setPrimate(primate); setPrimateActive(primate) }}>
+                            <button key={index} className={primateActive && primateActive.fullName == primate.fullName ? styles.active : ""} onClick={() => { setPrimate({...primate}); setPrimateActive({...primate}) }}>
                                 <img src={`/tinyImg/${primate.skullImgURL}.png`} />
                             </button>
                         )
                     })};
                 </div>
             }
+
+            <div className={styles.buttonContainer}>
+                <a className={styles.goToLearningButton} onClick={(e) => {e.preventDefault(); setTab(TABS.learning)}} href={`?tab=${TABS.learning}`}>
+                    Retour aux vidéos
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M512 128C514 128 515.9 128.1 517.8 128.3L422.1 224L490 224L562 152C570.8 163 576 176.9 576 192L576 448C576 483.3 547.3 512 512 512L128 512C92.7 512 64 483.3 64 448L64 192C64 156.7 92.7 128 128 128L198.1 128L102.1 224L170 224L265 129L266 128L358.1 128L262.1 224L330 224L425 129L426 128L512.1 128z"/></svg>
+                </a>
+            </div>
         </div>
     )
 }

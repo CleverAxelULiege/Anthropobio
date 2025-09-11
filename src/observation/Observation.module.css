@@ -244,3 +244,44 @@
     flex-shrink: 0;
     /* box-shadow: 60px -8px #db8f02; */
 }
+
+
+
+
+.buttonContainer {
+    margin: 20px 0;
+    display: flex;
+    justify-content: center;
+}
+
+.goToLearningButton {
+  text-decoration: none;
+  background-color: #DB8F02;
+  color: white;
+  border: none;
+  font-size: 24px;
+  padding: 8px 16px;
+  font-weight: 700;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  fill: white;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.goToLearningButton svg {
+  width: 30px;
+  transition: transform 1s ease;
+  transform-style: preserve-3d;
+}
+
+.goToLearningButton:hover svg {
+  transform: rotateY(360deg);
+}
+
+.goToLearningButton:hover {
+  background-color: #c47b00;
+}

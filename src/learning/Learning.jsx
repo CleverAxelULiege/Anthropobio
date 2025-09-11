@@ -1,29 +1,30 @@
 import Subtitle from "../components/subtitle/Subtitle";
 import Title from "../components/title/Title";
 import styles from "./Learning.module.css";
-import { BASE_VIDEOS, CRITERION_VIDEOS, PRIMATES, VIDEOS } from "../App";
+import { BASE_VIDEOS, CRITERION_VIDEOS, PRIMATES, TABS, VIDEOS } from "../App";
 import { useAppSettings } from "../AppSettingsContext";
 import { useEffect, useRef, useState } from "react";
 import PanelSubtitle from "../components/panelSubtitle/PanelSubtitle";
 
 
-export default function Learning() {
+export default function Learning({ setTab }) {
+
     /**
      * @type {React.RefObject<HTMLDivElement>}
      */
     const carouselTrackRef = useRef(null);
 
     useEffect(() => {
-        document.getElementById("expert_mode_button").classList.add("hidden");
+        document.getElementById("expert_mode_button").classList.remove("hidden");
     }, []);
 
     const onClickGoToCriteriaTable = () => {
         carouselTrackRef.current.style.transform = "translateX(-100%)";
-        document.getElementById("expert_mode_button").classList.remove("hidden");
+        document.getElementById("expert_mode_button").classList.add("hidden");
 
     }
     const onClickGoToVideos = () => {
-        document.getElementById("expert_mode_button").classList.add("hidden");
+        document.getElementById("expert_mode_button").classList.remove("hidden");
         carouselTrackRef.current.style.transform = "";
     }
 
@@ -33,7 +34,13 @@ export default function Learning() {
 
 
                 <Subtitle>
-                    Visionnez les vidéos ci-dessous et découvrez à quoi être attentif lorsque vous observez un crâne <br></br>(« Bases ») ainsi que les 9 critères morphologiques qui permettent de l’identifier (« Critères »)
+                    <div style={{textAlign: "left"}}>
+                        Visionnez les vidéos ci-dessous, réparties en deux catégories : <br></br>
+                        <div >
+                            &#8226; <i>« Bases »</i> : pour apprendre à quoi être attentif lors de l'observation d’un crâne <br></br>
+                            &#8226; <i>« Critères »</i> : pour découvrir les 9 critères morphologiques qui permettent de l’identifier
+                        </div>
+                    </div>
                 </Subtitle>
             </div>
 
@@ -42,7 +49,7 @@ export default function Learning() {
                     <div ref={carouselTrackRef} className={styles.carouselTrack}>
 
                         <div className={styles.carouselSlide}>
-                            <VideosSection onClickGotoCriteriaTable={onClickGoToCriteriaTable}></VideosSection>
+                            <VideosSection setTab={setTab} onClickGotoCriteriaTable={onClickGoToCriteriaTable}></VideosSection>
                         </div>
 
                         <div className={styles.carouselSlide}>
@@ -61,7 +68,9 @@ export default function Learning() {
 }
 
 
-function VideosSection({ onClickGotoCriteriaTable }) {
+function VideosSection({ onClickGotoCriteriaTable, setTab }) {
+    const { expertMode, setExpertMode, primateId, setPrimateId } = useAppSettings();
+
     const [selectedVideo, setSelectedVideo] = useState(VIDEOS[0]?.url || '');
 
     return (
@@ -70,7 +79,7 @@ function VideosSection({ onClickGotoCriteriaTable }) {
                 <div className="center" style={{ maxWidth: "1920px" }}>
                     <PanelSubtitle>Critères d'identification</PanelSubtitle>
                 </div>
-                <button onClick={() => onClickGotoCriteriaTable()} className={styles.goToCriteriaTableButton}>
+                <button style={{display: expertMode ? "flex" : "none"}} onClick={() => onClickGotoCriteriaTable()} className={styles.goToCriteriaTableButton}>
                     Critères morphologiques
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 491.4C538.5 447.4 576 379.8 576 304C576 171.5 461.4 64 320 64C178.6 64 64 171.5 64 304C64 379.8 101.5 447.4 160 491.4L160 528C160 554.5 181.5 576 208 576L240 576L240 536C240 522.7 250.7 512 264 512C277.3 512 288 522.7 288 536L288 576L352 576L352 536C352 522.7 362.7 512 376 512C389.3 512 400 522.7 400 536L400 576L432 576C458.5 576 480 554.5 480 528L480 491.4zM160 320C160 284.7 188.7 256 224 256C259.3 256 288 284.7 288 320C288 355.3 259.3 384 224 384C188.7 384 160 355.3 160 320zM416 256C451.3 256 480 284.7 480 320C480 355.3 451.3 384 416 384C380.7 384 352 355.3 352 320C352 284.7 380.7 256 416 256z" /></svg>
                     &#8594;
@@ -123,12 +132,11 @@ function VideosSection({ onClickGotoCriteriaTable }) {
                     </div>
                 </div>
                 <div className={styles.buttonContainer}>
-                    <a href="" className={styles.goToObservationButton}>
-                        C'est parti pour la manipulation 
+                    <a className={styles.goToObservationButton} onClick={(e) => { e.preventDefault(); setTab(TABS.observation) }} href={`?tab=${TABS.observation}`}>
+                        C'est parti pour la manipulation
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M135.4 317.6C130.6 309.9 128 301.1 128 292L128 256C128 229.5 149.5 208 176 208L192 208L192 128C192 101.5 213.5 80 240 80C257.3 80 272.4 89.1 280.9 102.8C285.2 80.7 304.7 64 328 64C351.4 64 370.9 80.8 375.1 102.9C382.4 98.5 390.9 96 400 96C422.1 96 440.8 111 446.3 131.4C451.8 129.2 457.7 128 464 128C490.5 128 512 149.5 512 176L512 272.9C512 282.8 509.7 292.6 505.2 301.5L465.6 380.6C454.8 402.3 432.6 416 408.4 416L224 416C207.5 416 192.2 407.6 183.4 393.6L135.4 317.6zM160 544L160 496C160 478.3 174.3 464 192 464L448 464C465.7 464 480 478.3 480 496L480 544C480 561.7 465.7 576 448 576L192 576C174.3 576 160 561.7 160 544z" /></svg>
                     </a>
                 </div>
-                <div>hello world</div>
             </div>
         </>
     );
@@ -194,9 +202,9 @@ function SelectableGrid(props) {
     }, [expertMode]);
 
     return (
-        <div className={styles.primateNamesContainer} style={{ gridTemplateColumns: expertMode ? "repeat(8, 1fr)" : "repeat(6, 1fr)" }}>
+        <div className={styles.primateNamesContainer} style={{ gridTemplateColumns: expertMode || true ? "repeat(8, 1fr)" : "repeat(6, 1fr)" }}>
 
-            {expertMode &&
+            {
                 PRIMATES.filter((primate) => primate.shouldHighlight).map((primate, index) => (
                     <button
                         onClick={() => { props.onClick(primate); setPrimateActive(primate) }}
@@ -207,7 +215,7 @@ function SelectableGrid(props) {
                     </button>
                 ))}
 
-            {!expertMode &&
+            {/* {!expertMode &&
                 PRIMATES.filter(
                     (primate) => primate.shouldHighlight && primate.isExpert === false
                 ).map((primate, index) => (
@@ -218,7 +226,7 @@ function SelectableGrid(props) {
                     >
                         {primate.name}
                     </button>
-                ))}
+                ))} */}
         </div>
     );
 }

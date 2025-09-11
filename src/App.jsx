@@ -84,8 +84,8 @@ function App() {
         </>
       }
 
-      {tab === TABS.learning && <Learning></Learning>}
-      {tab === TABS.observation && <Observation></Observation>}
+      {tab === TABS.learning && <Learning setTab={setTab}></Learning>}
+      {tab === TABS.observation && <Observation setTab={setTab}></Observation>}
     </main>
   );
 }
