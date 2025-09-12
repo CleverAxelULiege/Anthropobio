@@ -58,6 +58,8 @@ function App() {
     const url = new URL(window.location.href);
     url.searchParams.set("tab", tab);
     window.history.pushState({}, "", url);
+
+    document.body.scrollIntoView({behavior: "instant", block: "start"});
   }, [tab]);
 
   useEffect(() => {
