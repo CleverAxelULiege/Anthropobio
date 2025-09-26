@@ -15,16 +15,16 @@ export default function Learning({ setTab }) {
     const carouselTrackRef = useRef(null);
 
     useEffect(() => {
-        document.getElementById("expert_mode_button").classList.remove("hidden");
+        document.getElementById("expert_mode_button").classList.add("hidden");
     }, []);
 
     const onClickGoToCriteriaTable = () => {
         carouselTrackRef.current.style.transform = "translateX(-100%)";
-        document.getElementById("expert_mode_button").classList.add("hidden");
+        document.getElementById("expert_mode_button").classList.remove("hidden");
 
     }
     const onClickGoToVideos = () => {
-        document.getElementById("expert_mode_button").classList.remove("hidden");
+        document.getElementById("expert_mode_button").classList.add("hidden");
         carouselTrackRef.current.style.transform = "";
     }
 
@@ -79,8 +79,8 @@ function VideosSection({ onClickGotoCriteriaTable, setTab }) {
                 <div className="center" style={{ maxWidth: "1920px" }}>
                     <PanelSubtitle>Vidéos</PanelSubtitle>
                 </div>
-                <button style={{display: expertMode ? "flex" : "none"}} onClick={() => onClickGotoCriteriaTable()} className={styles.goToCriteriaTableButton}>
-                    Critères morphologiques
+                <button  onClick={() => onClickGotoCriteriaTable()} className={styles.goToCriteriaTableButton}>
+                    Crânes identifiés
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 491.4C538.5 447.4 576 379.8 576 304C576 171.5 461.4 64 320 64C178.6 64 64 171.5 64 304C64 379.8 101.5 447.4 160 491.4L160 528C160 554.5 181.5 576 208 576L240 576L240 536C240 522.7 250.7 512 264 512C277.3 512 288 522.7 288 536L288 576L352 576L352 536C352 522.7 362.7 512 376 512C389.3 512 400 522.7 400 536L400 576L432 576C458.5 576 480 554.5 480 528L480 491.4zM160 320C160 284.7 188.7 256 224 256C259.3 256 288 284.7 288 320C288 355.3 259.3 384 224 384C188.7 384 160 355.3 160 320zM416 256C451.3 256 480 284.7 480 320C480 355.3 451.3 384 416 384C380.7 384 352 355.3 352 320C352 284.7 380.7 256 416 256z" /></svg>
                     &#8594;
                 </button>
@@ -153,13 +153,13 @@ function CriteriaTableSection({ onClickGoToVideoTutorials }) {
     }, [expertMode]);
 
     const onClickCriteriaTable = (primate) => {
-        setPrimate(primate)
+        setPrimate(primate);
     }
     return (
         <section>
             <div className="relative">
                 <div className="center" style={{ maxWidth: "1920px", display: "flex", justifyContent: "end" }}>
-                    <PanelSubtitle reverse>Critères morphologiques</PanelSubtitle>
+                    <PanelSubtitle reverse>Crânes identifiés</PanelSubtitle>
                 </div>
 
                 <button onClick={() => onClickGoToVideoTutorials()} className={styles.goToVideosButton}>
@@ -178,7 +178,6 @@ function CriteriaTableSection({ onClickGoToVideoTutorials }) {
                     <p><b><u>Remarque :</u></b> {primate.remark}</p>
                 </div>
             }
-
         </section>
     )
 }
@@ -202,7 +201,7 @@ function SelectableGrid(props) {
     }, [expertMode]);
 
     return (
-        <div className={styles.primateNamesContainer} style={{ gridTemplateColumns: expertMode || true ? "repeat(8, 1fr)" : "repeat(6, 1fr)" }}>
+        <div className={styles.primateNamesContainer} style={{ gridTemplateColumns: expertMode ? "repeat(8, 1fr)" : "repeat(6, 1fr)" }}>
 
             {
                 PRIMATES.filter((primate) => primate.shouldHighlight).map((primate, index) => (
@@ -215,7 +214,7 @@ function SelectableGrid(props) {
                     </button>
                 ))}
 
-            {/* {!expertMode &&
+            {!expertMode &&
                 PRIMATES.filter(
                     (primate) => primate.shouldHighlight && primate.isExpert === false
                 ).map((primate, index) => (
@@ -226,7 +225,7 @@ function SelectableGrid(props) {
                     >
                         {primate.name}
                     </button>
-                ))} */}
+                ))}
         </div>
     );
 }

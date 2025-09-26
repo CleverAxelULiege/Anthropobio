@@ -4,9 +4,9 @@ export default function PanelSubtitle({ children, className = "", reverse = fals
     return (
         <div className={styles.container}>
             <h3 className={`${styles.panelSubtitle} ${className}`}>
-                {!reverse && <span>&#10149;</span>}
+                {/* {!reverse && <span>&#10149;</span>} */}
                 {children}
-                {reverse && <span style={{transform: "scale(-1, -1)", display: "inline-block"}}>&#10149;</span>}
+                {/* {reverse && <span style={{transform: "scale(-1, -1)", display: "inline-block"}}>&#10149;</span>} */}
             </h3>
         </div>
     );
