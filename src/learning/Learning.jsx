@@ -5,6 +5,7 @@ import { BASE_VIDEOS, CRITERION_VIDEOS, PRIMATES, TABS, VIDEOS } from "../App";
 import { useAppSettings } from "../AppSettingsContext";
 import { useEffect, useRef, useState } from "react";
 import PanelSubtitle from "../components/panelSubtitle/PanelSubtitle";
+import { createPortal } from "react-dom";
 
 
 export default function Learning({ setTab }) {
@@ -34,7 +35,7 @@ export default function Learning({ setTab }) {
 
 
                 <Subtitle>
-                    <div style={{textAlign: "left"}}>
+                    <div style={{ textAlign: "left" }}>
                         Visionnez les vidéos ci-dessous, réparties en deux catégories : <br></br>
                         <div >
                             &#8226; <i>« Bases »</i> : pour apprendre à quoi être attentif lors de l'observation d’un crâne <br></br>
@@ -79,7 +80,7 @@ function VideosSection({ onClickGotoCriteriaTable, setTab }) {
                 <div className="center" style={{ maxWidth: "1920px" }}>
                     <PanelSubtitle>Vidéos</PanelSubtitle>
                 </div>
-                <button  onClick={() => onClickGotoCriteriaTable()} className={styles.goToCriteriaTableButton}>
+                <button onClick={() => onClickGotoCriteriaTable()} className={styles.goToCriteriaTableButton}>
                     Crânes identifiés
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 491.4C538.5 447.4 576 379.8 576 304C576 171.5 461.4 64 320 64C178.6 64 64 171.5 64 304C64 379.8 101.5 447.4 160 491.4L160 528C160 554.5 181.5 576 208 576L240 576L240 536C240 522.7 250.7 512 264 512C277.3 512 288 522.7 288 536L288 576L352 576L352 536C352 522.7 362.7 512 376 512C389.3 512 400 522.7 400 536L400 576L432 576C458.5 576 480 554.5 480 528L480 491.4zM160 320C160 284.7 188.7 256 224 256C259.3 256 288 284.7 288 320C288 355.3 259.3 384 224 384C188.7 384 160 355.3 160 320zM416 256C451.3 256 480 284.7 480 320C480 355.3 451.3 384 416 384C380.7 384 352 355.3 352 320C352 284.7 380.7 256 416 256z" /></svg>
                     &#8594;
@@ -145,6 +146,7 @@ function VideosSection({ onClickGotoCriteriaTable, setTab }) {
 function CriteriaTableSection({ onClickGoToVideoTutorials }) {
     const { expertMode, setExpertMode, primateId, setPrimateId } = useAppSettings();
     const [primate, setPrimate] = useState(null);
+    const [toggleCriteria, setToggleCriteria] = useState(true);
 
     useEffect(() => {
         if (!expertMode && primate && primate.isExpert) {
@@ -154,6 +156,7 @@ function CriteriaTableSection({ onClickGoToVideoTutorials }) {
 
     const onClickCriteriaTable = (primate) => {
         setPrimate(primate);
+        setToggleCriteria(true);
     }
     return (
         <section>
@@ -172,15 +175,53 @@ function CriteriaTableSection({ onClickGoToVideoTutorials }) {
                 <SelectableGrid onClick={onClickCriteriaTable}></SelectableGrid>
             </div>
             {
-                primate &&
-                <div className={styles.criteriaWithDescription}>
-                    <CriteriaTable primate={primate}></CriteriaTable>
-                    <p><b><u>Remarque :</u></b> {primate.remark}</p>
-                </div>
+                primate && toggleCriteria &&
+                createPortal(
+                    <CriteriaTableOverlay onClickOutside={() => { setToggleCriteria(false) }} primate={primate}></CriteriaTableOverlay>,
+                    document.getElementById("overlay-root")
+                )
+                // <div className={styles.criteriaWithDescription}>
+                //     <CriteriaTable primate={primate}></CriteriaTable>
+                //     <p><b><u>Remarque :</u></b> {primate.remark}</p>
+                // </div>
             }
         </section>
     )
 }
+
+function CriteriaTableOverlay({ primate, onClickOutside }) {
+    const containerRef = useRef(null);
+    useEffect(() => {
+        document.body.style.overflowY = "hidden"
+        return () => {
+            document.body.style.overflowY = ""
+        }
+
+    }, []);
+
+    const handleClick = (e) => {
+        if (containerRef.current && !containerRef.current.contains(e.target)) {
+            onClickOutside();
+        }
+    };
+
+    return (
+        <div className={styles.criteriaTableOverLay} onClick={handleClick}>
+            <div  className={`${styles.criteriaTableOverLayContainer} ${styles.fadeInUp}`}>
+                <div className={styles.criteriaInfoContainer}>
+                    <CriteriaTable primate={primate}></CriteriaTable>
+                    <div className={styles.primateRemark}>
+                        <p><b><u>Remarque :</u></b> {primate.remark}</p>
+                    </div>
+                </div>
+                <div ref={containerRef} className={styles.sketchfabContainer}>
+                    <iframe src={`${primate.skullScanURL}?ui_controls=0&ui_infos=0&ui_stop=0&ui_watermark=0 &ui_inspector=0&ui_help=0&ui_settings=0&ui_fullscreen=0`} frameBorder="0"></iframe>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 
 /**
  * 
@@ -204,6 +245,7 @@ function SelectableGrid(props) {
         <div className={styles.primateNamesContainer} style={{ gridTemplateColumns: expertMode ? "repeat(8, 1fr)" : "repeat(6, 1fr)" }}>
 
             {
+                expertMode &&
                 PRIMATES.filter((primate) => primate.shouldHighlight).map((primate, index) => (
                     <button
                         onClick={() => { props.onClick(primate); setPrimateActive(primate) }}
