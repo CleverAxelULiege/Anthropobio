@@ -1,5 +1,4 @@
 import Subtitle from "../components/subtitle/Subtitle";
-import Title from "../components/title/Title";
 import styles from "./Learning.module.css";
 import { BASE_VIDEOS, CRITERION_VIDEOS, PRIMATES, TABS, VIDEOS } from "../App";
 import { useAppSettings } from "../AppSettingsContext";
@@ -35,12 +34,13 @@ export default function Learning({ setTab }) {
 
 
                 <Subtitle>
-                    <div style={{ textAlign: "left" }}>
-                        Visionnez les vidéos ci-dessous, réparties en deux catégories : <br></br>
+                    <div style={{ textAlign: "center" }}>
+                        Découvrez ici chaque crâne identifié avec les 9 critères morphologiques détaillés 
+                        {/* Visionnez les vidéos ci-dessous, réparties en deux catégories : <br></br>
                         <div >
                             &#8226; <i>« Bases »</i> : pour apprendre à quoi être attentif lors de l'observation d’un crâne <br></br>
                             &#8226; <i>« Critères »</i> : pour découvrir les 9 critères morphologiques qui permettent de l’identifier
-                        </div>
+                        </div> */}
                     </div>
                 </Subtitle>
             </div>
