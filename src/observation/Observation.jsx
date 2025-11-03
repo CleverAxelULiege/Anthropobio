@@ -184,7 +184,8 @@ function CriteriaForm({ primate, onChangeForm }) {
         const correctAnswer = primate.criteria.find((c) => c.name == select.getAttribute("data-criterion-name")).description;
 
         label.style.transform = "translateX(30px)";
-        if (answerSelected == correctAnswer) {
+
+        if (answerSelected.replace(/’/g, "'") == correctAnswer.replace(/’/g, "'")) {
             select.classList.remove(styles.incorrect);
             select.classList.remove(styles.animation);
 

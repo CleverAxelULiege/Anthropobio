@@ -35,7 +35,7 @@ export default function Learning({ setTab }) {
 
                 <Subtitle>
                     <div style={{ textAlign: "center" }}>
-                        Découvrez ici chaque crâne identifié avec les 9 critères morphologiques détaillés 
+                        Découvrez ici chaque crâne identifié avec les 9 critères morphologiques détaillés
                         {/* Visionnez les vidéos ci-dessous, réparties en deux catégories : <br></br>
                         <div >
                             &#8226; <i>« Bases »</i> : pour apprendre à quoi être attentif lors de l'observation d’un crâne <br></br>
@@ -206,17 +206,28 @@ function CriteriaTableOverlay({ primate, onClickOutside }) {
     };
 
     return (
-        <div className={styles.criteriaTableOverLay} onClick={handleClick}>
-            <div  className={`${styles.criteriaTableOverLayContainer} ${styles.fadeInUp}`}>
-                <div className={styles.criteriaInfoContainer}>
-                    <CriteriaTable primate={primate}></CriteriaTable>
-                    <div className={styles.primateRemark}>
-                        <p><b><u>Remarque :</u></b> {primate.remark}</p>
+        <div>
+
+            <div className={styles.criteriaTableOverLay} onClick={handleClick}>
+                <div className={styles.buttonTableOverlayContainer}>
+                    <button onClick={() => {onClickOutside()}}>
+                        &#x2716;
+                    </button>
+                </div>
+                <div>
+                    <div className={`${styles.criteriaTableOverLayContainer} ${styles.fadeInUp}`}>
+                        <div className={styles.criteriaInfoContainer}>
+                            <CriteriaTable primate={primate}></CriteriaTable>
+                            <div className={styles.primateRemark}>
+                                <p><b><u>Remarque :</u></b> {primate.remark}</p>
+                            </div>
+                        </div>
+                        <div ref={containerRef} className={styles.sketchfabContainer}>
+                            <iframe src={`${primate.skullScanURL}?ui_controls=0&ui_infos=0&ui_stop=0&ui_watermark=0 &ui_inspector=0&ui_help=0&ui_settings=0&ui_fullscreen=0`} frameBorder="0"></iframe>
+                        </div>
                     </div>
                 </div>
-                <div ref={containerRef} className={styles.sketchfabContainer}>
-                    <iframe src={`${primate.skullScanURL}?ui_controls=0&ui_infos=0&ui_stop=0&ui_watermark=0 &ui_inspector=0&ui_help=0&ui_settings=0&ui_fullscreen=0`} frameBorder="0"></iframe>
-                </div>
+
             </div>
         </div>
     )
