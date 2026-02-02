@@ -67,8 +67,8 @@ function App() {
       setTab(getTabFromUrl());
     };
 
-    console.log(PRIMATES.find((p) => p.skullImgURL == "27"));
-    console.log(CRITERIA_WITH_ANSWERS);
+    // console.log(PRIMATES.find((p) => p.skullImgURL == "27"));
+    // console.log(CRITERIA_WITH_ANSWERS);
     
     
     window.addEventListener("popstate", handlePopState);
