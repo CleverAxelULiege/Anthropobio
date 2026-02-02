@@ -35,12 +35,12 @@ export default function Learning({ setTab }) {
 
                 <Subtitle>
                     <div style={{ textAlign: "center" }}>
-                        Découvrez ici chaque crâne identifié avec les 9 critères morphologiques détaillés
-                        {/* Visionnez les vidéos ci-dessous, réparties en deux catégories : <br></br>
+                        {/* Découvrez ici chaque crâne identifié avec les 9 critères morphologiques détaillés */}
+                        Visionnez les vidéos ci-dessous, réparties en deux catégories : <br></br>
                         <div >
                             &#8226; <i>« Bases »</i> : pour apprendre à quoi être attentif lors de l'observation d’un crâne <br></br>
                             &#8226; <i>« Critères »</i> : pour découvrir les 9 critères morphologiques qui permettent de l’identifier
-                        </div> */}
+                        </div>
                     </div>
                 </Subtitle>
             </div>
@@ -207,7 +207,6 @@ function CriteriaTableOverlay({ primate, onClickOutside }) {
 
     return (
         <div>
-
             <div className={styles.criteriaTableOverLay} onClick={handleClick}>
                 <div className={styles.buttonTableOverlayContainer}>
                     <button onClick={() => {onClickOutside()}}>
@@ -282,6 +281,7 @@ function SelectableGrid(props) {
         </div>
     );
 }
+
 
 function CriteriaTable({ primate }) {
     return (
