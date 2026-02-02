@@ -5,6 +5,7 @@ import Subtitle from "../components/subtitle/Subtitle";
 import styles from "./Observation.module.css";
 import PanelSubtitle from "../components/panelSubtitle/PanelSubtitle";
 import Timeline from "../components/timeline/Timeline";
+import { CriteriaTableSection } from "../learning/Learning";
 
 export default function Observation({ setTab }) {
     /**
@@ -26,15 +27,20 @@ export default function Observation({ setTab }) {
         if (!primate) {
             return;
         }
-        carouselTrackRef.current.style.transform = "translateX(-100%)";
+        carouselTrackRef.current.style.transform = "translateX(-200%)";
         document.getElementById("expert_mode_button").classList.add("hidden");
         setToggleTimeline(false);
     }, [primate]);
 
     const onClickGoToSkullDisplay = () => {
-        carouselTrackRef.current.style.transform = "";
+        carouselTrackRef.current.style.transform = "translateX(-100%)";
         setToggleTimeline(false);
         document.getElementById("expert_mode_button").classList.remove("hidden");
+    }
+
+    const onClickGoToCriteriaTable = () => {
+        carouselTrackRef.current.style.transform = "";
+        
     }
 
     const onChangeForm = () => {
@@ -65,10 +71,16 @@ export default function Observation({ setTab }) {
 
             <div className={styles.carouselContainer}>
                 <div className={styles.carouselWrapper}>
-                    <div ref={carouselTrackRef} className={styles.carouselTrack}>
+                    <div ref={carouselTrackRef} className={styles.carouselTrack} style={{transform: "translateX(-100%)"}}>
 
                         <div className={styles.carouselSlide}>
-                            <SkullSelectionDisplay setTab={setTab} setPrimate={setPrimate}></SkullSelectionDisplay>
+                            <div>
+                                <CriteriaTableSection reverse={true} onClickGoToVideoTutorials={() => onClickGoToSkullDisplay()}></CriteriaTableSection>
+                            </div>
+                        </div>
+
+                        <div className={styles.carouselSlide}>
+                            <SkullSelectionDisplay onClickGoToCriteriaTable={() => {onClickGoToCriteriaTable()}} setTab={setTab} setPrimate={setPrimate}></SkullSelectionDisplay>
                         </div>
 
                         <div className={styles.carouselSlide}>
@@ -88,13 +100,20 @@ export default function Observation({ setTab }) {
     )
 }
 
-function SkullSelectionDisplay({ setPrimate, setTab }) {
+function SkullSelectionDisplay({ setPrimate, setTab, onClickGoToCriteriaTable }) {
     const { expertMode, setExpertMode, primateId, setPrimateId } = useAppSettings();
     const [primateActive, setPrimateActive] = useState(null);
 
     return (
         <div className="center padding_none" style={{ maxWidth: "1900px" }}>
-            <PanelSubtitle>Crânes</PanelSubtitle>
+            <div style={{position: "relative"}}>
+                <button onClick={onClickGoToCriteriaTable} className={styles.goToSkullDisplayButton} style={{height: "calc(100% - 10px)"}}>
+                    &#8592;
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 640"><path d="M480 491.4C538.5 447.4 576 379.8 576 304C576 171.5 461.4 64 320 64C178.6 64 64 171.5 64 304C64 379.8 101.5 447.4 160 491.4L160 528C160 554.5 181.5 576 208 576L240 576L240 536C240 522.7 250.7 512 264 512C277.3 512 288 522.7 288 536L288 576L352 576L352 536C352 522.7 362.7 512 376 512C389.3 512 400 522.7 400 536L400 576L432 576C458.5 576 480 554.5 480 528L480 491.4zM160 320C160 284.7 188.7 256 224 256C259.3 256 288 284.7 288 320C288 355.3 259.3 384 224 384C188.7 384 160 355.3 160 320zM416 256C451.3 256 480 284.7 480 320C480 355.3 451.3 384 416 384C380.7 384 352 355.3 352 320C352 284.7 380.7 256 416 256z" /></svg>
+                    Crânes identifiés
+                </button>
+                <PanelSubtitle reverse={true}>Crânes</PanelSubtitle>
+            </div>
             {
                 expertMode &&
                 <div className={styles.skullImagesContainer}>
